@@ -7,11 +7,17 @@ class Service:
         self.throughput = throughput
         self.computation_time = computation_time
         self.cost = cost
+        self.failed = False
+
+    def fail(self):
+        self.failed = True
 
     def get_response_time(self, user):
         return self.computation_time + distance_time(self.location, user.location)
 
     def serve_request(user, request_time, begin_time):
+        if self.failed:
+            return None
         final_time = begin_time + self.computation_time +\
                 distance_time(self.location, user.location)
         response_time = final_time - request_time
