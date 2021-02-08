@@ -13,21 +13,27 @@ class MasterBroker:
         self.total_broker_load = defaultdict(int)
         self.failed = False
 
-    def move_user(self, user, broker):
-        best_score = float('inf')
-        old_distance = distance_time(broker.location, user.location)
-        for b, load in self.total_broker_load.items():
-            new_distance = distance_time(b.load, user.location)
-            b_score = load + (new_distance - old_distance) / old_distance
-            if b_score < best_score:
-                best_score = b_score
-                broker2 = b
-        broker.remove_user(user)
-        broker2.add_user(user)
+    def fill_brokers_data(self, brokers):
+        # this happens when a new master is elected among brokers
+        for broker in brokers:
+            broker.update_master(self)
+            self.brokers.append(broker)
+            for user in broker.get_users():
+                self.user_to_broker[user] = broker
+                self.broker_to_users[broker].append(user)
+            for service, throughput in broker.get_services():
+                self.service_broker_throughput[(service, broker)] = service.throughput
+                self.broker_to_services[broker].append(service)
+        self.check_for_failed_brokers()
 
     def check_for_failed_brokers(self):
+        # detect failed brokers
         failed_brokers = [broker in self.brokers if broker.is_failed()]
         self.brokers = [broker in self.brokers if not broker.is_failed()]
+        for broker in self.brokers:
+            broker.update_brokers_list(self.brokers)
+
+        # redistribute the users/services from failed brokers
         for broker in failed_brokers:
             self.total_broker_load.pop(broker)
             for user in self.broker_to_users:
@@ -35,8 +41,19 @@ class MasterBroker:
             self.broker_to_users.pop(broker)
             for service in self.broker_to_services:
                 throughput = self.service_broker_throughput.pop((service, broker))
-                # TODO: find new broker for service 
+                # add this throughput to broker2 with high load on this service
+                max_load = 0
+                for b in self.brokers:
+                    load = self.service_broker_load.get((service, b), 0)
+                    if load > max_load:
+                        broker2 = b
+                        max_load = load
+                new_throughput =\
+                        self.service_broker_throughput[(service, broker2)] + throughput
+                broker2.update_service(service, new_throughput)
+                self.service_broker_throughput[(service, broker2)] = new_throughput
             self.broker_to_services.pop(broker)
+
 
     def fail(self):
         self.failed = True
@@ -61,7 +78,7 @@ class MasterBroker:
                 best_distance = distance
         broker.add_service(service, service.throughput)
         self.service_broker_throughput[(service, broker)] = service.throughput
-        self.broker_to_services[broker].append((service, service.throughput))
+        self.broker_to_services[broker].append(service)
 
     def broker_selection_report(self, broker, service_loads, unsatisfied_users):
         # This is master load balancing among brokers.
@@ -70,7 +87,16 @@ class MasterBroker:
 
         # Step A: Move unsatisfied users to close & lightly loaded brokers
         for user in unsatisfied_users:
-            self.move_user(user, broker)
+            best_score = float('inf')
+            old_distance = distance_time(broker.location, user.location)
+            for b, load in self.total_broker_load.items():
+                new_distance = distance_time(b.load, user.location)
+                b_score = load + (new_distance - old_distance) / old_distance
+                if b_score < best_score:
+                    best_score = b_score
+                    broker2 = b
+            broker.remove_user(user)
+            broker2.add_user(user)
 
         # Step B: Take some load off the loaded services
         total_load = total_throughput = 0
@@ -85,9 +111,9 @@ class MasterBroker:
                     continue
                 # find broker2 with less load on this service
                 best_difference = 0
-                for b in brokers:
-                    difference = self.service_broker_throughput[(service, b)] -\
-                            self.service_broker_load[(service, b)]
+                for b in self.brokers:
+                    difference = self.service_broker_throughput.get((service, b), 0) -\
+                            self.service_broker_load.get((service, b), 0)
                     if difference > best_difference:
                         broker2 = b
                         best_difference = difference
@@ -103,6 +129,6 @@ class MasterBroker:
         return True
 
     def service_fail_report(self, broker, service):
-        self.service_broker_throughput.pop(service)
-        self.broker_to_services = broker.services[:]
+        self.broker_to_services[broker].remove(service)
         self.service_broker_load.pop((service, broker))
+        self.service_broker_throughput.pop((service, broker))

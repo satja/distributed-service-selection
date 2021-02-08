@@ -12,11 +12,12 @@ from util impot *
 class Simulation:
     def __init__(self, num_users, num_services, num_brokers):
         self.inactive_users = []
-        self.active_users = []
+        self.users = []
         self.inactive_services = []
-        self.active_services = []
+        self.services = []
         self.brokers = []
-        master_broker = MasterBroker(util.random_location())
+        self.inactive_brokers = num_brokers
+        self.master_broker = MasterBroker(util.random_location())
 
         for _ in num_services:
             location = util.random_location()
@@ -34,31 +35,39 @@ class Simulation:
             self.inactive_users.append(
                     User(location, min_reliability, max_response_time))
 
-        for _ in num_brokers:
-            location = util.random_location()
-            self.brokers.append(Broker(location, master_broker))
-
     def run(self, steps=10**3):
         for t in range(steps):
             if t % 100 == 0:
                 print(f"{t} out of {steps} steps...")
 
             qos = []
+            self.brokers = [broker for broker in self.brokers if not broker.is_failed()]
             for broker in self.brokers:
                 qos.extend(broker.perform_selection(t))
            
             # If there is an inactive service, it can appear.
             if self.inactive_service and randrange(2):
                 service = self.inactive_services.pop()
-                self.active_services.append(service)
+                self.services.append(service)
                 self.master_broker.new_service(service)
+            
+            # If there is an inactive broker, it can appear.
+            if self.inactive_brokers and randrange(2):
+                self.inactive_brokers -= 1
+                location = util.random_location()
+                self.brokers.append(Broker(location, self.master_broker))
             
             # If there is an inactive user, it can appear.
             if self.inactive_users and randrange(2):
                 user = self.inactive_users.pop()
-                self.active_users.append(user)
+                self.users.append(user)
                 self.master_broker.new_user(user)
 
+            # TODO: generate new requests
+
+            # TODO: service fail
+            # TODO: user fail
+            # TODO: broker fail + update self.master_broker
 
 if __name__ == '__main__':
     num_users = int(sys.argv[1])
