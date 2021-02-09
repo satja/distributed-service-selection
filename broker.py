@@ -1,4 +1,5 @@
 import algorithms
+import util
 
 class Broker:
     def __init__(self, location, master_broker,
@@ -73,7 +74,7 @@ class Broker:
         # report to master
         if not self.master_broker.selection_report(self, service_loads, unsatisfied_users):
             # master failed -> leader election among brokers
-            new_master = algorithms.leader_election_simple(self.brokers)
+            new_master = util.leader_election_simple(self.brokers)
             if new_master == self:
                 master_broker = MasterBroker(self.location)
                 self.failed = True
