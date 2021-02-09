@@ -7,10 +7,11 @@ from user import User
 from broker import Broker
 from master_broker import MasterBroker
 from service import Service
-from util impot *
+import util
 
 class Simulation:
-    def __init__(self, num_users, num_services, num_brokers):
+    def __init__(self, num_users, num_services, num_brokers, ms_per_step=1000):
+        self.ms_per_step = ms_per_step
         self.inactive_users = []
         self.users = []
         self.inactive_services = []
@@ -39,11 +40,29 @@ class Simulation:
         for t in range(steps):
             if t % 100 == 0:
                 print(f"{t} out of {steps} steps...")
+            
+            # If there is an inactive broker, it appears.
+            if self.inactive_brokers:
+                self.inactive_brokers -= 1
+                location = util.random_location()
+                self.brokers.append(Broker(location, self.master_broker))
 
+            # Master broker potential fail
+            if randrange(100) == 0:
+                self.master_broker.fail()
+
+            # Service selection
             qos = []
             self.brokers = [broker for broker in self.brokers if not broker.is_failed()]
             for broker in self.brokers:
-                qos.extend(broker.perform_selection(t))
+                selection_time = t * self.ms_per_step
+                results = broker.perform_selection(selection_time)
+                qos.extend(results)
+
+            # Master broker maybe changed
+            self.master_broker = self.brokers[0].master_broker
+            assert all(broker.master_broker == self.master_broker
+                    for broker in self.brokers), [b.master_broker for f in self.brokers]
            
             # If there is an inactive service, it can appear.
             if self.inactive_service and randrange(2):
@@ -51,27 +70,27 @@ class Simulation:
                 self.services.append(service)
                 self.master_broker.new_service(service)
             
-            # If there is an inactive broker, it can appear.
-            if self.inactive_brokers and randrange(2):
-                self.inactive_brokers -= 1
-                location = util.random_location()
-                self.brokers.append(Broker(location, self.master_broker))
-            
             # If there is an inactive user, it can appear.
             if self.inactive_users and randrange(2):
                 user = self.inactive_users.pop()
                 self.users.append(user)
                 self.master_broker.new_user(user)
 
-            # TODO: generate new requests
+            # Potential service/user/broker fail
+            if randrange(10) == 0:
+                entity = choice(self.services + self.users + self.brokers)
+                entity.fail()
 
-            # TODO: service fail
-            # TODO: user fail
-            # TODO: broker fail + update self.master_broker
+            # New requests
+            for user in self.users:
+                for num_reqs in randrange(4):
+                    req_time = t * self.ms_per_step + randrange(self.ms_per_step)
+                    user.send_request(req_time)
 
 if __name__ == '__main__':
     num_users = int(sys.argv[1])
     num_services = int(sys.argv[2])
     num_brokers = int(sys.argv[3])
+    steps = int(sys.argv[4])
     s = Simulation(num_users, num_services, num_brokers)
-    s.run()
+    s.run(steps)

@@ -12,13 +12,10 @@ class Service:
     def fail(self):
         self.failed = True
 
-    def get_response_time(self, user):
-        return self.computation_time + distance_time(self.location, user.location)
-
-    def serve_request(user, request_time, begin_time):
+    def serve_request(user, request_time, arrival_time):
         if self.failed:
             return None
-        final_time = begin_time + self.computation_time +\
+        answer_time = arrival_time + self.computation_time +\
                 distance_time(self.location, user.location)
-        response_time = final_time - request_time
+        response_time = answer_time - request_time
         return (self.reliability, self.response_time, self.cost)

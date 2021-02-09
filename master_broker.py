@@ -13,6 +13,10 @@ class MasterBroker:
         self.total_broker_load = defaultdict(int)
         self.failed = False
 
+    def new_broker(self, broker):
+        self.brokers.append(broker)
+        return self.brokers[:]
+
     def fill_brokers_data(self, brokers):
         # this happens when a new master is elected among brokers
         for broker in brokers:
@@ -68,6 +72,7 @@ class MasterBroker:
         broker.add_user(user)
         self.user_to_broker[user] = broker
         self.broker_to_users[broker].append(user)
+        user.set_broker(broker)
 
     def new_service(self, service):
         best_distance = float('inf')

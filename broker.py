@@ -11,13 +11,13 @@ class Broker:
         self.master_broker = master_broker
         self.selection_algorithm = selection_algorithm
         self.failed = False
-        self.brokers = [self]
+        self.brokers = self.master_broker.new_broker(self)
 
     def get_users(self):
-        return self.users
+        return self.users[:]
 
     def get_services(self):
-        return self.services
+        return self.services[:]
 
     def update_master(self, master_broker):
         self.master_broker = master_broker
@@ -60,7 +60,9 @@ class Broker:
         unsatisfied_users = set()
         for i, (user, request_time) in enumerate(self.requests):
             service, throughput = request_service[i]
-            qos = service.serve_request(user, request_time, selection_done_time)
+            service_time = selection_done_time + util.distance_time(
+                    self.location, service.location)
+            qos = service.serve_request(user, request_time, service_time)
             if qos == None:
                 # service failed
                 self.update_service(service, 0)
