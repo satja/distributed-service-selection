@@ -1,5 +1,7 @@
 import random
 from collections import defaultdict
+import logging
+from util import get_uid, distance_time
 
 class MasterBroker:
     def __init__(self, location):
@@ -12,12 +14,16 @@ class MasterBroker:
         self.service_broker_load = defaultdict(int)
         self.total_broker_load = defaultdict(int)
         self.failed = False
+        self.id = get_uid()
+        logging.debug(f'0, master, {self.id}, __init__, {location}')
 
     def new_broker(self, broker):
         self.brokers.append(broker)
+        logging.debug(f'0, master, {self.id}, new_broker, {broker.id}')
         return self.brokers[:]
 
     def fill_brokers_data(self, brokers):
+        logging.debug(f'0, master, {self.id}, fill_brokers_data')
         # this happens when a new master is elected among brokers
         for broker in brokers:
             broker.update_master(self)
@@ -31,9 +37,10 @@ class MasterBroker:
         self.check_for_failed_brokers()
 
     def check_for_failed_brokers(self):
+        logging.debug(f'0, master, {self.id}, check_for_failed_brokers')
         # detect failed brokers
-        failed_brokers = [broker in self.brokers if broker.is_failed()]
-        self.brokers = [broker in self.brokers if not broker.is_failed()]
+        failed_brokers = [broker for broker in self.brokers if broker.is_failed()]
+        self.brokers = [broker for broker in self.brokers if not broker.is_failed()]
         for broker in self.brokers:
             broker.update_brokers_list(self.brokers)
 
@@ -61,10 +68,11 @@ class MasterBroker:
 
     def fail(self):
         self.failed = True
+        logging.debug(f'0, master, {self.id}, fail')
 
     def new_user(self, user):
         best_distance = float('inf')
-        for b in brokers:
+        for b in self.brokers:
             distance = distance_time(b.location, user.location)
             if distance < best_distance:
                 broker = b
@@ -73,10 +81,11 @@ class MasterBroker:
         self.user_to_broker[user] = broker
         self.broker_to_users[broker].append(user)
         user.set_broker(broker)
+        logging.debug(f'0, master, {self.id}, new_user, {user.id}, {broker.id}')
 
     def new_service(self, service):
         best_distance = float('inf')
-        for b in brokers:
+        for b in self.brokers:
             distance = distance_time(b.location, service.location)
             if distance < best_distance:
                 broker = b
@@ -84,8 +93,9 @@ class MasterBroker:
         broker.add_service(service, service.throughput)
         self.service_broker_throughput[(service, broker)] = service.throughput
         self.broker_to_services[broker].append(service)
+        logging.debug(f'0, master, {self.id}, new_service, {service.id}, {broker.id}')
 
-    def broker_selection_report(self, broker, service_loads, unsatisfied_users):
+    def selection_report(self, broker, service_loads, unsatisfied_users):
         # This is master load balancing among brokers.
         if self.failed:
             return False
@@ -130,10 +140,14 @@ class MasterBroker:
                 self.service_broker_throughput[(service, broker)] = broker_throughput + 1
                 # assume broker is still loaded
                 self.service_broker_load[(service, broker)] = broker_throughput + 1
-        self.total_broker_load[broker] = total_load / total_throughput
+
+        if total_throughput:
+            self.total_broker_load[broker] = total_load / total_throughput
+        logging.debug(f'0, master, {self.id}, selection_report, {broker.id}, {total_load}, {total_throughput}')
         return True
 
     def service_fail_report(self, broker, service):
         self.broker_to_services[broker].remove(service)
         self.service_broker_load.pop((service, broker))
         self.service_broker_throughput.pop((service, broker))
+        logging.debug(f'0, master, {self.id}, service_fail_report, {broker.id}, {service.id}')

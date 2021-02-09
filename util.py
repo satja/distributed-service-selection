@@ -2,6 +2,12 @@ from random import *
 import geopy.distance
 
 KM_PER_MS = 100
+uid = 0
+
+def get_uid():
+    global uid
+    uid += 1
+    return uid
 
 def leader_election_simple(brokers):
     minimal_hash = float('inf')
