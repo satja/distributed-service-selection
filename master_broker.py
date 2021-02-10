@@ -33,7 +33,7 @@ class MasterBroker:
                 self.user_to_broker[user] = broker
                 self.broker_to_users[broker].append(user)
             for service, throughput in broker.get_services():
-                self.service_broker_throughput[(service, broker)] = service.throughput
+                self.service_broker_throughput[(service, broker)] = throughput
                 self.broker_to_services[broker].add(service)
         self.check_for_failed_brokers()
 
@@ -73,7 +73,6 @@ class MasterBroker:
                 self.broker_to_services[broker2].add(service)
                 logging.info(f'0, master, {self.id}, move_service, {service.id}, {throughput}, {broker.id}, {broker2.id}')
             self.broker_to_services.pop(broker)
-
 
     def fail(self):
         self.failed = True

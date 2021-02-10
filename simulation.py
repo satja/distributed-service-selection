@@ -77,7 +77,7 @@ class Simulation:
             total_thr = sum(s.throughput for s in self.services)
             total_thr_alt = sum(sum([thr for s, thr in broker.services])\
                     for broker in self.brokers)
-            logging.info(f'{total_thr}, {total_thr_alt}')
+            assert total_thr == total_thr_alt, f'{total_thr}, {total_thr_alt}'
            
             # If there is an inactive service, it can appear.
             if self.inactive_services and randrange(2):
@@ -101,17 +101,6 @@ class Simulation:
                 service = choice(self.services)
                 service.fail()
                 self.inactive_services += 1
-
-            logging.info('')
-            total_thr = sum(s.throughput for s in self.services)
-            total_thr_alt = sum(sum([thr for s, thr in broker.services])\
-                    for broker in self.brokers)
-            if total_thr != total_thr_alt:
-                print([(s.id, s.throughput) for s in self.services])
-                for broker in self.brokers:
-                    print(broker.id, [(s.id, s.throughput) for s, thr in broker.services])
-                print(total_thr, total_thr_alt)
-                exit(0)
 
             # New requests
             for user in self.users:
