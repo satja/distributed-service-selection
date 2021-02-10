@@ -14,7 +14,10 @@ class Service:
 
     def fail(self):
         self.failed = True
-        logging.debug(f'0, service, {self.id}, fail')
+        logging.info(f'0, service, {self.id}, fail')
+    
+    def is_failed(self):
+        return self.failed
 
     def serve_request(self, user, request_time, arrival_time):
         if self.failed:
@@ -23,4 +26,4 @@ class Service:
                 distance_time(self.location, user.location)
         response_time = answer_time - request_time
         logging.debug(f'{arrival_time}, service, {self.id}, serve_request, {user.id}, {request_time}, {answer_time}, {response_time}')
-        return (self.reliability, self.response_time, self.cost)
+        return (self.reliability, response_time, self.cost)

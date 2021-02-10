@@ -10,8 +10,8 @@ class User:
         logging.debug(f'0, user, {self.id}, __init__, {location}, {min_reliability}, {max_response_time}')
 
     def send_request(self, request_time):
-        self.broker.new_request(self, request_time);
         logging.debug(f'{request_time}, user, {self.id}, send_request')
+        self.broker.new_request(self, request_time);
 
     def set_broker(self, broker):
         self.broker = broker
