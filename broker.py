@@ -96,8 +96,9 @@ class Broker:
         self.requests = []
         logging.debug(f'{begin_time}, broker, {self.id}, perform_selection, {selection_done_time}, {len(unsatisfied_users)}, {len(reqs_qos)}')
 
-        for i, (service, thr) in enumerate(self.services):
-            if service_loads[i] == 0 and service.is_failed():
+        # check for failed services
+        for service in service_loads:
+            if service.is_failed():
                 self.master_broker.service_fail_report(service)
 
         # report to master
@@ -110,4 +111,4 @@ class Broker:
                 self.failed = True
                 master_broker.fill_brokers_data(self.brokers)
 
-        return reqs_qos, unsatisfied_reqs
+        return reqs_qos, unsatisfied_reqs, service_loads

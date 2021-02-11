@@ -1,5 +1,6 @@
 from random import *
 import geopy.distance
+import math
 
 KM_PER_MS = 100
 uid = 0
@@ -23,6 +24,9 @@ def distance_time(location1, location2):
 
 def random_location():
     return uniform(-90, 90), uniform(-180, 180)
+
+def sigmoid(x):
+  return 1 / (1 + math.exp(-x))
 
 
 if __name__ == '__main__':

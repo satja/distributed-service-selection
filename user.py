@@ -16,3 +16,6 @@ class User:
     def set_broker(self, broker):
         self.broker = broker
         logging.debug(f'0, user, {self.id}, set_broker, {broker.id}')
+
+    def get_broker(self):
+        return self.broker
