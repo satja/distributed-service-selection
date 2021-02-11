@@ -17,13 +17,13 @@ def random_service():
     location = util.random_location()
     reliability = 1 - 0.1 ** max(np.random.normal(2, .5), 1)
     computation_time = max(1, np.random.normal(75, 50))
-    throughput = max(1, int(np.random.normal(20, 10)))
+    throughput = max(1, int(np.random.normal(30, 20)))
     cost = max(0, np.random.uniform(-1, 4))
     return Service(location, throughput, reliability, computation_time, cost)
 
 def random_user():
     location = util.random_location()
-    min_reliability = 1 - 0.1 ** max(np.random.normal(1.4, .6), 1)
+    min_reliability = 1 - 0.1 ** max(np.random.normal(1.5, .5), 1)
     max_response_time = randint(300, 1000)
     return User(location, min_reliability, max_response_time)
 
