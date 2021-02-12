@@ -19,6 +19,16 @@ class Service:
     def is_failed(self):
         return self.failed
 
+    def utility_cost(self, user, request_time, arrival_time):
+        if self.failed:
+            return 2 * MAX_COST
+        answer_time = arrival_time + self.computation_time +\
+                distance_time(self.location, user.location)
+        response_time = answer_time - request_time
+        if response_time <= user.max_response_time and self.reliability >= user.min_reliability:
+            return self.cost
+        return MAX_COST + self.cost
+
     def serve_request(self, user, request_time, arrival_time):
         if self.failed:
             return None

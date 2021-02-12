@@ -3,6 +3,7 @@ import math
 
 KM_PER_MS = 100
 uid = 0
+MAX_COST = 100
 
 def get_uid():
     global uid
