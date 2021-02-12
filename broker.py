@@ -9,7 +9,7 @@ class Broker:
             selection_algorithm=algorithms.random_selection):
         self.location = location
         self.users = []
-        self.services = []
+        self.services = dict()
         self.requests = []
         self.master_broker = master_broker
         self.selection_algorithm = selection_algorithm
@@ -19,13 +19,13 @@ class Broker:
         logging.debug(f'0, broker, {self.id}, __init__, {location}, {master_broker.id}')
 
     def total_throughput(self):
-        return sum(thr for service, thr in self.services)
+        return sum(self.services.values())
 
     def get_users(self):
         return self.users[:]
 
     def get_services(self):
-        return self.services[:]
+        return self.services.items()
 
     def update_master(self, master_broker):
         self.master_broker = master_broker
@@ -47,7 +47,7 @@ class Broker:
         logging.debug(f'0, broker, {self.id}, remove_user, {user.id}')
 
     def add_service(self, service, throughput):
-        self.services.append((service, throughput))
+        self.services[service] = throughput
         logging.info(f'0, broker, {self.id}, add_service, {service.id}, {throughput}')
 
     def update_brokers_list(self, brokers):
@@ -57,14 +57,10 @@ class Broker:
     def update_service(self, service, throughput):
         assert throughput >= 0
         logging.info(f'0, broker, {self.id}, update_service, {service.id}, {throughput}')
-        for i, (s, r) in enumerate(self.services):
-            if s == service:
-                if throughput == 0:
-                    self.services.pop(i)
-                else:
-                    self.services[i] = (service, throughput)
-                return
-        self.services.append((service, throughput))
+        if throughput == 0:
+            self.services.pop(service)
+        else:
+            self.services[service] = throughput
 
     def new_request(self, user, request_time):
         self.requests.append((user, request_time))
@@ -72,17 +68,19 @@ class Broker:
 
     def perform_selection(self, begin_time):
         request_service, service_loads, duration =\
-                self.selection_algorithm(self.requests, self.services, self)
+                self.selection_algorithm(self.requests, self.services.items(), self)
 
         selection_done_time = begin_time + duration
         reqs_qos = []
         unsatisfied_users = set()
         unsatisfied_reqs = 0
+        unanswered_reqs = 0
+        cost = 0
         for i, (user, request_time) in enumerate(self.requests):
             service = request_service[i]
             if not service:
                 unsatisfied_users.add(user)
-                unsatisfied_reqs += 1
+                unanswered_reqs += 1
                 reqs_qos.append(None)
                 continue
             service_time = selection_done_time + distance_time(
@@ -93,6 +91,7 @@ class Broker:
                 logging.debug(f'{selection_done_time}, broker, {self.id}, detect_service_fail, {service.id}')
             else:
                 reqs_qos.append(qos)
+                cost += qos[2]
                 if qos[0] < user.min_reliability or qos[1] > user.max_response_time:
                     unsatisfied_users.add(user)
                     unsatisfied_reqs += 1
@@ -100,7 +99,7 @@ class Broker:
         logging.debug(f'{begin_time}, broker, {self.id}, perform_selection, {selection_done_time}, {len(unsatisfied_users)}, {len(reqs_qos)}')
 
         # check for failed services
-        for service, _ in self.services:
+        for service in list(self.services.keys()):
             if service.is_failed():
                 self.master_broker.service_fail_report(service)
 
@@ -114,4 +113,4 @@ class Broker:
                 self.failed = True
                 master_broker.fill_brokers_data(self.brokers)
 
-        return reqs_qos, unsatisfied_reqs, service_loads
+        return reqs_qos, unanswered_reqs, unsatisfied_reqs, cost, service_loads

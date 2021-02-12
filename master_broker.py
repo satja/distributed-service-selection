@@ -17,6 +17,7 @@ class MasterBroker:
         self.unsatisfied_users = []
         self.light_load = []
         self.high_load = defaultdict(list)
+        self.services = set()
         logging.debug(f'0, master, {self.id}, __init__, {location}')
 
     def new_broker(self, broker):
@@ -36,6 +37,7 @@ class MasterBroker:
             for service, throughput in broker.get_services():
                 self.service_broker_throughput[(service, broker)] = throughput
                 self.broker_to_services[broker].add(service)
+                self.services.add(service)
         self.check_for_failed_brokers()
 
     def check_for_failed_brokers(self):
@@ -100,6 +102,7 @@ class MasterBroker:
         broker.add_service(service, service.throughput)
         self.service_broker_throughput[(service, broker)] = service.throughput
         self.broker_to_services[broker].add(service)
+        self.services.add(service)
         logging.info(f'0, master, {self.id}, new_service, {service.id}, {service.throughput}, {broker.id}')
 
     def selection_report(self, broker, service_loads, unsatisfied_users):
@@ -115,14 +118,16 @@ class MasterBroker:
                 self.high_load[service].append(broker)
             elif thr >= 5 and load <= thr // 2:
                 self.light_load.append((service, broker))
+        logging.info(f'{broker.id}, {len(broker.services)}, {total_throughput}, {len(self.services)}')
         if total_throughput:
             self.total_broker_load[broker] = total_load / total_throughput
         elif not broker.get_services():
             # Avoid adding new users to this broker in balance_brokers:
             self.total_broker_load[broker] = 1
             # Encourange adding services to this broker in balance_brokers:
-            for service, _ in self.light_load:
+            for service in self.services:
                 self.high_load[service].append(broker)
+                logging.debug(f'empty, {service.id}, {broker.id}')
         else:
             # Encourage adding users
             self.total_broker_load[broker] = 0
@@ -161,6 +166,7 @@ class MasterBroker:
         logging.debug([(s.id, b.id) for s, b in self.light_load])
         while self.light_load:
             service, broker = self.light_load.pop()
+            logging.debug(f'light_load, {service.id}, {broker.id}')
             if not self.high_load[service]:
                 continue
             broker2 = self.high_load[service].pop()
@@ -181,6 +187,7 @@ class MasterBroker:
 
     def service_fail_report(self, service):
         logging.info(f'0, master, {self.id}, service_fail_report, {service.id}')
+        self.services.discard(service)
         for broker in self.brokers:
             throughput = self.service_broker_throughput.pop((service, broker), None)
             if throughput:

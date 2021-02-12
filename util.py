@@ -1,5 +1,4 @@
 from random import *
-import geopy.distance
 import math
 
 KM_PER_MS = 100
@@ -20,7 +19,16 @@ def leader_election_simple(brokers):
     return leader
 
 def distance_time(location1, location2):
-    return geopy.distance.distance(location1, location2).km / KM_PER_MS
+    lat1, lon1 = location1
+    lat2, lon2 = location2
+    radius = 6371  # km
+    dlat = math.radians(lat2-lat1)
+    dlon = math.radians(lon2-lon1)
+    a = math.sin(dlat/2) * math.sin(dlat/2) + math.cos(math.radians(lat1)) \
+        * math.cos(math.radians(lat2)) * math.sin(dlon/2) * math.sin(dlon/2)
+    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1-a))
+    d = radius * c
+    return d / KM_PER_MS
 
 def random_location():
     return uniform(-90, 90), uniform(-180, 180)

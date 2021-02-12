@@ -5,7 +5,7 @@ import numpy as np
 import logging
 from collections import defaultdict
 from time import time
-logging.basicConfig(level=logging.INFO, stream=sys.stdout)
+logging.basicConfig(level=logging.WARNING, stream=sys.stdout)
 
 from user import User
 from broker import Broker
@@ -18,7 +18,7 @@ def random_service():
     location = util.random_location()
     reliability = 1 - 0.1 ** max(np.random.normal(2, .5), 1)
     computation_time = max(1, np.random.normal(75, 50))
-    throughput = max(1, int(np.random.normal(10, 5)))
+    throughput = max(1, int(np.random.normal(30, 20)))
     cost = max(0, np.random.uniform(-1, 4))
     return Service(location, throughput, reliability, computation_time, cost)
 
@@ -29,7 +29,7 @@ def random_user():
     return User(location, min_reliability, max_response_time)
 
 class Simulation:
-    def __init__(self, num_users, num_services, num_brokers, algorithm, ms_per_step=500):
+    def __init__(self, num_users, num_services, num_brokers, algorithm, ms_per_step=250):
         self.ms_per_step = ms_per_step
         self.inactive_users = []
         self.users = []
@@ -47,7 +47,9 @@ class Simulation:
     def run(self):
         steps = int(self.inactive_users * 1.5)
         qos = []
-        total_unsatisfied_reqs = 0
+        unanswered_reqs = 0
+        unsatisfied_reqs = 0
+        total_cost = 0
         for t in range(steps):
             if t % 10 == 0:
                 logging.info(f"{t} out of {steps} steps...")
@@ -69,16 +71,18 @@ class Simulation:
             self.services = [service for service in self.services if not service.failed]
             for broker in self.brokers:
                 selection_time = t * self.ms_per_step
-                results, unsatisfied, loads = broker.perform_selection(selection_time)
+                results, unanswered, unsatisfied, cost, loads = broker.perform_selection(selection_time)
                 qos.extend(results)
-                total_unsatisfied_reqs += unsatisfied
+                unanswered_reqs += unanswered
+                unsatisfied_reqs += unsatisfied
+                total_cost += cost
                 total_load = defaultdict(int)
                 for service, load in loads.items():
                     total_load[service] += load
                 for service, load in total_load.items():
                     assert load <= service.throughput, (service.id, load, service.throughput)
 
-            logging.info(time() - start)
+            logging.debug(time() - start)
 
             # Master broker maybe changed
             if self.master_broker != self.brokers[0].master_broker:
@@ -86,7 +90,7 @@ class Simulation:
                 self.brokers = self.master_broker.brokers[:]
                 # add new regular broker
                 location = util.random_location()
-                self.brokers.append(Broker(location, self.master_broker))
+                self.brokers.append(Broker(location, self.master_broker, self.algorithm))
             assert all(broker.master_broker == self.master_broker
                     for broker in self.brokers), [b.master_broker for b in self.brokers]
 
@@ -98,7 +102,7 @@ class Simulation:
             total_thr_alt = sum(broker.total_throughput() for broker in self.brokers)
             assert total_thr == total_thr_alt, f'{total_thr}, {total_thr_alt}'
 
-            logging.info(time() - start)
+            logging.debug(time() - start)
            
             # If there is an inactive service, appears.
             if self.inactive_services:
@@ -130,7 +134,12 @@ class Simulation:
                     user.send_request(req_time)
             logging.info('')
 
-        print(f'{total_unsatisfied_reqs} out of {len(qos)} reqs unsatisfied')
+        successful = len(qos) - unanswered_reqs - unsatisfied_reqs
+        print('total =', len(qos))
+        print('cost =', total_cost)
+        print('success_rate =', successful / len(qos))
+        print('unanswered_rate =', unanswered_reqs / len(qos))
+        print('unsatisfied =', unsatisfied_reqs / len(qos))
 
 if __name__ == '__main__':
     num_users = int(sys.argv[1])
