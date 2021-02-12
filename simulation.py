@@ -11,13 +11,14 @@ from user import User
 from broker import Broker
 from master_broker import MasterBroker
 from service import Service
+import algorithms
 import util
 
 def random_service():
     location = util.random_location()
     reliability = 1 - 0.1 ** max(np.random.normal(2, .5), 1)
     computation_time = max(1, np.random.normal(75, 50))
-    throughput = max(1, int(np.random.normal(30, 20)))
+    throughput = max(1, int(np.random.normal(10, 5)))
     cost = max(0, np.random.uniform(-1, 4))
     return Service(location, throughput, reliability, computation_time, cost)
 
@@ -28,7 +29,7 @@ def random_user():
     return User(location, min_reliability, max_response_time)
 
 class Simulation:
-    def __init__(self, num_users, num_services, num_brokers, ms_per_step=250):
+    def __init__(self, num_users, num_services, num_brokers, algorithm, ms_per_step=500):
         self.ms_per_step = ms_per_step
         self.inactive_users = []
         self.users = []
@@ -38,6 +39,10 @@ class Simulation:
         self.inactive_services = num_services
         self.inactive_brokers = num_brokers
         self.master_broker = MasterBroker(util.random_location())
+        if algorithm == 0:
+            self.algorithm = algorithms.random_selection
+        elif algorithm == 1:
+            self.algorithm = algorithms.round_robin_selection
 
     def run(self):
         steps = int(self.inactive_users * 1.5)
@@ -51,7 +56,7 @@ class Simulation:
             if self.inactive_brokers:
                 self.inactive_brokers -= 1
                 location = util.random_location()
-                self.brokers.append(Broker(location, self.master_broker))
+                self.brokers.append(Broker(location, self.master_broker, self.algorithm))
 
             self.master_broker.check_for_failed_brokers()
             if randrange(100) == 0:
@@ -90,8 +95,7 @@ class Simulation:
             # Master load balancing
             self.master_broker.balance_brokers()
             total_thr = sum(s.throughput for s in self.services)
-            total_thr_alt = sum(sum([thr for s, thr in broker.services])\
-                    for broker in self.brokers)
+            total_thr_alt = sum(broker.total_throughput() for broker in self.brokers)
             assert total_thr == total_thr_alt, f'{total_thr}, {total_thr_alt}'
 
             logging.info(time() - start)
@@ -132,5 +136,6 @@ if __name__ == '__main__':
     num_users = int(sys.argv[1])
     num_services = int(sys.argv[2])
     num_brokers = int(sys.argv[3])
-    s = Simulation(num_users, num_services, num_brokers)
+    algorithm = int(sys.argv[4])
+    s = Simulation(num_users, num_services, num_brokers, algorithm)
     s.run()

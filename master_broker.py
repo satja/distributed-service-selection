@@ -15,8 +15,8 @@ class MasterBroker:
         self.failed = False
         self.id = get_uid()
         self.unsatisfied_users = []
-        self.high_load = []
-        self.light_load = defaultdict(list)
+        self.light_load = []
+        self.high_load = defaultdict(list)
         logging.debug(f'0, master, {self.id}, __init__, {location}')
 
     def new_broker(self, broker):
@@ -112,18 +112,20 @@ class MasterBroker:
             thr = self.service_broker_throughput[(service, broker)]
             total_throughput += thr
             if load == thr:
-                self.high_load.append((service, broker))
-            elif thr >= 2 and load <= thr // 2:
-                self.light_load[service].append(broker)
+                self.high_load[service].append(broker)
+            elif thr >= 5 and load <= thr // 2:
+                self.light_load.append((service, broker))
         if total_throughput:
             self.total_broker_load[broker] = total_load / total_throughput
-        else:
-            # This broker has no services.
+        elif not broker.get_services():
             # Avoid adding new users to this broker in balance_brokers:
             self.total_broker_load[broker] = 1
             # Encourange adding services to this broker in balance_brokers:
-            for service in self.light_load:
-                self.light_load[service].append(broker)
+            for service, _ in self.light_load:
+                self.high_load[service].append(broker)
+        else:
+            # Encourage adding users
+            self.total_broker_load[broker] = 0
         self.unsatisfied_users.extend([(user, broker) for user in unsatisfied_users])
         logging.debug(f'0, master, {self.id}, selection_report, {broker.id}, {total_load}, {total_throughput}')
         return True
@@ -156,29 +158,29 @@ class MasterBroker:
         self.unsatisfied_users = []
 
         # Move throughput from brokers with light load to brokers with high load
-        while self.high_load:
-            service, broker = self.high_load.pop()
-            if not self.light_load[service]:
+        logging.debug([(s.id, b.id) for s, b in self.light_load])
+        while self.light_load:
+            service, broker = self.light_load.pop()
+            if not self.high_load[service]:
                 continue
-            broker2 = self.light_load[service].pop()
-            source_thr = self.service_broker_throughput[(service, broker2)]
-            dest_thr = self.service_broker_throughput[(service, broker)]
+            broker2 = self.high_load[service].pop()
+            source_thr = self.service_broker_throughput[(service, broker)]
+            dest_thr = self.service_broker_throughput[(service, broker2)]
             transfer = source_thr // 2
-            logging.info(f'0, master, {self.id}, transfer_throughput, {service.id}, {broker2.id}, {broker.id}, {transfer}')
+            logging.info(f'0, master, {self.id}, transfer_throughput, {service.id}, {broker.id}, {broker2.id}, {transfer}')
             source_thr -= transfer
             dest_thr += transfer
-            broker2.update_service(service, source_thr)
-            broker.update_service(service, dest_thr)
-            self.service_broker_throughput[(service, broker2)] = source_thr
-            self.service_broker_throughput[(service, broker)] = dest_thr
+            broker.update_service(service, source_thr)
+            broker2.update_service(service, dest_thr)
+            self.service_broker_throughput[(service, broker)] = source_thr
+            self.service_broker_throughput[(service, broker2)] = dest_thr
             if source_thr == 0:
-                self.broker_to_services[broker2].remove(service)
-            self.broker_to_services[broker].add(service)
-        self.light_load.clear()
+                self.broker_to_services[broker].remove(service)
+            self.broker_to_services[broker2].add(service)
+        self.high_load.clear()
 
     def service_fail_report(self, service):
         logging.info(f'0, master, {self.id}, service_fail_report, {service.id}')
-        self.light_load.pop(service, None)
         for broker in self.brokers:
             throughput = self.service_broker_throughput.pop((service, broker), None)
             if throughput:

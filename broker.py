@@ -18,6 +18,9 @@ class Broker:
         self.master_broker.new_broker(self)
         logging.debug(f'0, broker, {self.id}, __init__, {location}, {master_broker.id}')
 
+    def total_throughput(self):
+        return sum(thr for service, thr in self.services)
+
     def get_users(self):
         return self.users[:]
 
@@ -69,7 +72,7 @@ class Broker:
 
     def perform_selection(self, begin_time):
         request_service, service_loads, duration =\
-                self.selection_algorithm(self.requests, self.services, self.id)
+                self.selection_algorithm(self.requests, self.services, self)
 
         selection_done_time = begin_time + duration
         reqs_qos = []
@@ -97,7 +100,7 @@ class Broker:
         logging.debug(f'{begin_time}, broker, {self.id}, perform_selection, {selection_done_time}, {len(unsatisfied_users)}, {len(reqs_qos)}')
 
         # check for failed services
-        for service in service_loads:
+        for service, _ in self.services:
             if service.is_failed():
                 self.master_broker.service_fail_report(service)
 

@@ -11,7 +11,7 @@ def greedy_selection(requests, services):
     # TODO: implement
     return None
 
-def round_robin_selection(requests, services, broker_id):
+def round_robin_selection(requests, services, broker):
     start = time()
     queue = deque(services)
     service_loads = defaultdict(int)
@@ -26,10 +26,10 @@ def round_robin_selection(requests, services, broker_id):
             queue.append((service, thr - 1))
     request_service.extend([None] * max(0, len(requests) - len(request_service)))
     duration_ms = (time() - start) * 1000
-    logging.info(f'0, random_selection, {len(requests)}, {len(services)}, {duration_ms}, {broker_id}')
+    logging.info(f'0, round_robin_selection, {len(requests)}, {len(services)}, {duration_ms}, {broker.id}')
     return request_service, service_loads, duration_ms
 
-def random_selection(requests, services, broker_id):
+def random_selection(requests, services, broker):
     start = time()
     service_units = []
     for service, throughput in services:
@@ -41,7 +41,7 @@ def random_selection(requests, services, broker_id):
         service_loads[service] += 1
     service_loads.pop(None, None)
     duration_ms = (time() - start) * 1000
-    logging.info(f'0, random_selection, {len(requests)}, {len(services)}, {len(service_units)}, {duration_ms}, {broker_id}')
+    logging.info(f'0, random_selection, {len(requests)}, {len(services)}, {len(service_units)}, {duration_ms}, {broker.id}, {broker.total_throughput()}')
     return request_service, service_loads, duration_ms
 
 def ap_selection(requests, services):
