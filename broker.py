@@ -73,7 +73,7 @@ class Broker:
         selection_done_time = begin_time + duration
         reqs_qos = []
         unsatisfied_users = set()
-        unsatisfied_reqs = 0
+        unsatisfied_rt = unsatisfied_rel = unsatisfied_both = 0
         unanswered_reqs = 0
         cost = 0
         for i, (user, request_time) in enumerate(self.requests):
@@ -92,9 +92,15 @@ class Broker:
             else:
                 reqs_qos.append(qos)
                 cost += qos[2]
-                if qos[0] < user.min_reliability or qos[1] > user.max_response_time:
+                if qos[0] < user.min_reliability and qos[1] > user.max_response_time:
                     unsatisfied_users.add(user)
-                    unsatisfied_reqs += 1
+                    unsatisfied_both += 1
+                elif qos[0] < user.min_reliability:
+                    unsatisfied_users.add(user)
+                    unsatisfied_rel += 1
+                elif qos[1] > user.max_response_time:
+                    unsatisfied_users.add(user)
+                    unsatisfied_rt += 1
         self.requests = []
         logging.debug(f'{begin_time}, broker, {self.id}, perform_selection, {selection_done_time}, {len(unsatisfied_users)}, {len(reqs_qos)}')
 
@@ -113,4 +119,5 @@ class Broker:
                 self.failed = True
                 master_broker.fill_brokers_data(self.brokers)
 
+        unsatisfied_reqs = unsatisfied_rel, unsatisfied_rt, unsatisfied_both
         return reqs_qos, unanswered_reqs, unsatisfied_reqs, cost, service_loads

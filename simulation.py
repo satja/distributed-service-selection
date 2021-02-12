@@ -5,7 +5,7 @@ import numpy as np
 import logging
 from collections import defaultdict
 from time import time
-logging.basicConfig(level=logging.INFO, stream=sys.stdout)
+logging.basicConfig(level=logging.WARNING, stream=sys.stdout)
 
 from user import User
 from broker import Broker
@@ -45,12 +45,14 @@ class Simulation:
             self.algorithm = algorithms.round_robin_selection
         elif algorithm == 2:
             self.algorithm = algorithms.greedy_selection
+        elif algorithm == 3:
+            self.algorithm = algorithms.ap_selection
 
     def run(self):
         steps = int(self.inactive_users * 1.5)
         qos = []
         unanswered_reqs = 0
-        unsatisfied_reqs = 0
+        unsatisfied_rt = unsatisfied_rel = unsatisfied_both = 0
         total_cost = 0
         for t in range(steps):
             if t % 10 == 0:
@@ -76,7 +78,9 @@ class Simulation:
                 results, unanswered, unsatisfied, cost, loads = broker.perform_selection(selection_time)
                 qos.extend(results)
                 unanswered_reqs += unanswered
-                unsatisfied_reqs += unsatisfied
+                unsatisfied_rel += unsatisfied[0]
+                unsatisfied_rt += unsatisfied[1]
+                unsatisfied_both += unsatisfied[2]
                 total_cost += cost
                 total_load = defaultdict(int)
                 for service, load in loads.items():
@@ -136,12 +140,15 @@ class Simulation:
                     user.send_request(req_time)
             logging.info('')
 
-        successful = len(qos) - unanswered_reqs - unsatisfied_reqs
+        successful = len(qos) - unanswered_reqs - unsatisfied_rt\
+                - unsatisfied_both - unsatisfied_rel
         print('total =', len(qos))
         print('cost =', total_cost)
         print('success_rate =', successful / len(qos))
         print('unanswered_rate =', unanswered_reqs / len(qos))
-        print('unsatisfied =', unsatisfied_reqs / len(qos))
+        print('unsatisfied_rel =', unsatisfied_rel / len(qos))
+        print('unsatisfied_rt =', unsatisfied_rt / len(qos))
+        print('unsatisfied_both =', unsatisfied_both / len(qos))
 
 if __name__ == '__main__':
     num_users = int(sys.argv[1])

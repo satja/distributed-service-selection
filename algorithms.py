@@ -2,6 +2,7 @@ from random import *
 import logging
 from time import time
 from collections import defaultdict, deque
+from scipy.optimize import linear_sum_assignment
 
 def SALSA_selection(requests, services):
     # TODO: implement
@@ -69,9 +70,28 @@ def random_selection(requests, services, broker, begin_time):
     logging.info(f'0, random_selection, {len(requests)}, {len(services)}, {len(service_units)}, {duration_ms}, {broker.id}, {broker.total_throughput()}')
     return request_service, service_loads, duration_ms
 
-def ap_selection(requests, services):
-    # TODO: implement
-    return None
+def ap_selection(requests, services, broker, begin_time):
+    service_loads = defaultdict(int)
+    request_service = [None for r in requests]
+    if not requests or not services:
+        return request_service, service_loads, 0
+    start = time()
+    row_to_service = []
+    utility_cost = []
+    for service, thr in services:
+        for j in range(thr):
+            row_to_service.append(service)
+            utility_cost.append([service.utility_cost(user, req_time, begin_time)\
+                    for user, req_time in requests])
+    row_ind, col_ind = linear_sum_assignment(utility_cost)
+    for i, row in enumerate(row_ind):
+        request_index = col_ind[i]
+        service = row_to_service[row]
+        request_service[request_index] = service
+        service_loads[service] += 1
+    duration_ms = (time() - start) * 1000
+    logging.info(f'0, ap_selection, {len(requests)}, {len(services)}, {len(utility_cost)}, {duration_ms}, {broker.id}, {broker.total_throughput()}')
+    return request_service, service_loads, duration_ms
 
 def tp_selection(requests, services):
     # TODO: implement
