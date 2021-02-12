@@ -3,6 +3,9 @@ import logging
 from time import time
 from collections import defaultdict, deque
 from scipy.optimize import linear_sum_assignment
+import numpy as np
+
+from transportation_problem import *
 
 def SALSA_selection(requests, services):
     # TODO: implement
@@ -93,6 +96,34 @@ def ap_selection(requests, services, broker, begin_time):
     logging.info(f'0, ap_selection, {len(requests)}, {len(services)}, {len(utility_cost)}, {duration_ms}, {broker.id}, {broker.total_throughput()}')
     return request_service, service_loads, duration_ms
 
-def tp_selection(requests, services):
-    # TODO: implement
-    return None
+def tp_selection(requests, services, broker, begin_time):
+    if len(services) <= 1:
+        return round_robin_selection(requests, services, broker, begin_time)
+    service_loads = defaultdict(int)
+    request_service = [None for r in requests]
+    if not requests or not services:
+        return request_service, service_loads, 0
+    start = time()
+    user_demand = defaultdict(int)
+    user_to_req_indices = defaultdict(list)
+    for i, (user, _) in enumerate(requests):
+        user_demand[user] += 1
+        user_to_req_indices[user].append(i)
+    users = list(user_demand.keys())
+    demand = [user_demand[u] for u in users]
+    supply = [thr for service, thr in services]
+    utility_cost = []
+    for s, thr in services:
+        utility_cost.append([s.utility_cost(u, begin_time, begin_time) for u in users])
+    matching = transport(supply, demand, np.array(utility_cost))
+    if matching is None:
+        return greedy_selection(requests, services, broker, begin_time + time() - start)
+    for i, (service, thr) in enumerate(services):
+        for j, user in enumerate(users):
+            for _ in range(matching[i, j]):
+                service_loads[service] += 1
+                req_index = user_to_req_indices[user].pop()
+                request_service[req_index] = service
+    duration_ms = (time() - start) * 1000
+    logging.info(f'0, TP_selection, {len(requests)}, {len(services)}, {len(utility_cost)}, {duration_ms}, {broker.id}, {broker.total_throughput()}')
+    return request_service, service_loads, duration_ms

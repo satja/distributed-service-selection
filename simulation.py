@@ -5,7 +5,7 @@ import numpy as np
 import logging
 from collections import defaultdict
 from time import time
-logging.basicConfig(level=logging.WARNING, stream=sys.stdout)
+logging.basicConfig(level=logging.INFO, stream=sys.stdout)
 
 from user import User
 from broker import Broker
@@ -47,6 +47,8 @@ class Simulation:
             self.algorithm = algorithms.greedy_selection
         elif algorithm == 3:
             self.algorithm = algorithms.ap_selection
+        elif algorithm == 4:
+            self.algorithm = algorithms.tp_selection
 
     def run(self):
         steps = int(self.inactive_users * 1.5)
