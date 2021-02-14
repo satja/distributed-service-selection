@@ -67,10 +67,9 @@ class Broker:
         logging.debug(f'{request_time}, broker, {self.id}, new_request, {user.id}')
 
     def perform_selection(self, begin_time):
-        request_service, service_loads, duration = self.selection_algorithm(
+        request_service, service_loads, selection_done_time = self.selection_algorithm(
                 self.requests, self.services.items(), self, begin_time)
 
-        selection_done_time = begin_time + duration
         reqs_qos = []
         unsatisfied_users = set()
         unsatisfied_rt = unsatisfied_rel = unsatisfied_both = 0

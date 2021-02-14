@@ -1,0 +1,66 @@
+# max_response_time = randint(300, 1500)
+
+adrian@adrian-ThinkPad-T15-Gen-1:~/distributed-service-selection$ time python3 simulation.py 1000 100 10 0
+total = 1498079
+cost = 2308404.303237232
+success_rate = 0.6770510767456189
+unanswered_rate = 0.062168951036627576
+unsatisfied_rel = 0.18659496595306388
+unsatisfied_rt = 0.057146518975301035
+unsatisfied_both = 0.017038487289388612
+
+real	0m16,081s
+user	0m16,259s
+sys	0m1,343s
+
+adrian@adrian-ThinkPad-T15-Gen-1:~/distributed-service-selection$ time python3 simulation.py 1000 100 10 1
+total = 1494936
+cost = 1947182.11881171
+success_rate = 0.6587452573220526
+unanswered_rate = 0.08050511861377344
+unsatisfied_rel = 0.19631208292528912
+unsatisfied_rt = 0.04851779607956461
+unsatisfied_both = 0.015919745059320266
+
+real	0m15,391s
+user	0m15,713s
+sys	0m1,269s
+
+adrian@adrian-ThinkPad-T15-Gen-1:~/distributed-service-selection$ time python3 simulation.py 1000 100 10 2
+total = 1497182
+cost = 465930.237019689
+success_rate = 0.9427197227858737
+unanswered_rate = 0.00024245549305294882
+unsatisfied_rel = 0.00048691475051129387
+unsatisfied_rt = 0.053639437289521245
+unsatisfied_both = 0.002911469681040782
+
+real	0m53,903s
+user	0m54,101s
+sys	0m1,305s
+
+adrian@adrian-ThinkPad-T15-Gen-1:~/distributed-service-selection$ time python3 simulation.py 1000 100 10 3
+total = 1497634
+cost = 945405.4727175062
+success_rate = 0.8978956140151733
+unanswered_rate = 0.02552960202559504
+unsatisfied_rel = 0.0009127730807393529
+unsatisfied_rt = 0.07415029306225687
+unsatisfied_both = 0.0015117178162354754
+
+real	14m23,094s
+user	14m21,936s
+sys	0m2,520s
+
+adrian@adrian-ThinkPad-T15-Gen-1:~/distributed-service-selection$ time python3 simulation.py 1000 100 10 4
+total = 1496735
+cost = 610746.8981542083
+success_rate = 0.9289052504284325
+unanswered_rate = 0.01428910261335507
+unsatisfied_rel = 0.008594039693065238
+unsatisfied_rt = 0.04478882367286126
+unsatisfied_both = 0.0034227835922858757
+
+real	2m14,695s
+user	2m14,983s
+sys	0m1,237s

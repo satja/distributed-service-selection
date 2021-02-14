@@ -5,7 +5,7 @@ import numpy as np
 import logging
 from collections import defaultdict
 from time import time
-logging.basicConfig(level=logging.INFO, stream=sys.stdout)
+logging.basicConfig(level=logging.WARNING, stream=sys.stdout)
 
 from user import User
 from broker import Broker
@@ -25,7 +25,7 @@ def random_service():
 def random_user():
     location = util.random_location()
     min_reliability = 1 - 0.1 ** max(np.random.normal(1.5, .5), 1)
-    max_response_time = randint(300, 1000)
+    max_response_time = randint(300, 1500)
     return User(location, min_reliability, max_response_time)
 
 class Simulation:
@@ -112,7 +112,7 @@ class Simulation:
 
             logging.debug(time() - start)
            
-            # If there is an inactive service, appears.
+            # If there is an inactive service, it appears.
             if self.inactive_services:
                 service = random_service()
                 self.services.append(service)

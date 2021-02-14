@@ -1,3 +1,5 @@
+# max_response_time = randint(300, 1000)
+
 kurdija@kurdija:~/distributed-service-selection$ time python3 simulation.py 1000 100 10 0
 total = 1497690
 cost = 2392404.2769088717
@@ -22,6 +24,7 @@ unsatisfied_both = 0.031181690499231626
 real	0m24.534s
 user	0m24.560s
 sys	0m0.224s
+
 kurdija@kurdija:~/distributed-service-selection$ time python3 simulation.py 1000 100 10 2
 total = 1499489
 cost = 1022813.099207171
@@ -34,6 +37,7 @@ unsatisfied_both = 0.005934688417187455
 real	1m16.799s
 user	1m16.652s
 sys	0m0.192s
+
 kurdija@kurdija:~/distributed-service-selection$ time python3 simulation.py 1000 100 10 3
 total = 1499170
 cost = 1164397.8730053904
