@@ -7,7 +7,7 @@ import numpy as np
 
 from transportation_problem import *
 
-myrandom = Random(17)
+myrandom = Random(7777)
 
 def greedy_selection(requests, services, broker, begin_time):
     start = time()

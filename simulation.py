@@ -135,10 +135,10 @@ class Simulation:
                 self.inactive_users -= 1
 
             # Potential service/broker fail
-            if t % 100 == 99 and len(self.brokers):
+            if t > 100 and t % 100 == 99 and len(self.brokers):
                 choice(self.brokers).fail()
                 self.inactive_brokers += 1
-            if t % 100 == 90 and len(self.services):
+            if t > 100 and t % 100 == 90 and len(self.services):
                 service = choice(self.services)
                 service.fail()
                 self.inactive_services += 1
@@ -205,13 +205,14 @@ if __name__ == '__main__':
             'Violated RT reqs.', 'Violated reliability reqs.'):
         with open(name + '.txt', 'w') as f:
             f.write('')
-    for random_seed in range(30):
+    for random_seed in range(3):
         print()
-        num_users, num_services = 50, 10
+        num_users, num_services, num_brokers = 1000, 100, 10
         params = []
-        for algorithm in range(5):
+        for algorithm in range(30):
             for num_brokers, balance_users, balance_services in [
-                    (1, 0, 0), (10, 0, 0), (10, 1, 0), (10, 0, 1), (10, 1, 1)]:
+                    (1, 0, 0), (num_brokers, 0, 0), (num_brokers, 1, 0),
+                    (num_brokers, 0, 1), (num_brokers, 1, 1)]:
                 params.append((num_users, num_services, num_brokers, algorithm,
                     balance_users, balance_services, random_seed))
         with Pool(os.cpu_count()) as p:
