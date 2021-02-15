@@ -205,7 +205,7 @@ if __name__ == '__main__':
             'Violated RT reqs.', 'Violated reliability reqs.'):
         with open(name + '.txt', 'w') as f:
             f.write('')
-    for random_seed in range(2):
+    for random_seed in range(30):
         print()
         num_users, num_services = 50, 10
         params = []
