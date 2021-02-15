@@ -33,6 +33,7 @@ def random_user():
 class Simulation:
     def __init__(self, num_users, num_services, num_brokers, algorithm,
             balance_users, balance_services, random_seed=0, ms_per_step=250):
+        self.random_seed = random_seed
         seed(random_seed)
         self.ms_per_step = ms_per_step
         self.inactive_users = []
@@ -135,12 +136,11 @@ class Simulation:
                 self.inactive_users -= 1
 
             # Potential service/broker fail
-            if t > 100 and t % 100 == 99 and len(self.brokers):
+            if randrange(100) == 0 and len(self.brokers):
                 choice(self.brokers).fail()
                 self.inactive_brokers += 1
-            if t > 100 and t % 100 == 90 and len(self.services):
-                service = choice(self.services)
-                service.fail()
+            if randrange(100) == 0 and len(self.services):
+                choice(self.services).fail()
                 self.inactive_services += 1
 
             # New requests
@@ -153,9 +153,10 @@ class Simulation:
         successful = len(qos) - unanswered_reqs - unsatisfied_rt\
                 - unsatisfied_both - unsatisfied_rel
 
-        print(len(qos), len(self.brokers), self.algorithm, self.balancing)
+        print(self.random_seed, len(qos), len(self.brokers), self.algorithm, self.balancing)
 
-        return len(qos), total_cost, successful / len(qos), unanswered_reqs / len(qos),\
+        return len(qos), total_cost / len(qos),\
+                successful / len(qos), unanswered_reqs / len(qos),\
                 (unsatisfied_rt + unsatisfied_both) / len(qos),\
                 (unsatisfied_rel + unsatisfied_both) / len(qos)
         '''
@@ -187,6 +188,7 @@ def simulate(params):
     for (i, name) in [(1, 'Cost'), (2, 'Successful reqs.'), (3, 'Failed reqs.'),
             (4, 'Violated RT reqs.'), (5, 'Violated reliability reqs.')]:
         result[name] = ret + str(results[i]) + '\n'
+    #print(result)
     return result
 
 if __name__ == '__main__':
@@ -205,20 +207,19 @@ if __name__ == '__main__':
             'Violated RT reqs.', 'Violated reliability reqs.'):
         with open(name + '.txt', 'w') as f:
             f.write('')
-    for random_seed in range(3):
-        print()
+    params = []
+    for random_seed in range(30):
         num_users, num_services, num_brokers = 1000, 100, 10
-        params = []
-        for algorithm in range(30):
+        for algorithm in range(5):
             for num_brokers, balance_users, balance_services in [
                     (1, 0, 0), (num_brokers, 0, 0), (num_brokers, 1, 0),
                     (num_brokers, 0, 1), (num_brokers, 1, 1)]:
                 params.append((num_users, num_services, num_brokers, algorithm,
                     balance_users, balance_services, random_seed))
-        with Pool(os.cpu_count()) as p:
-             results = p.map(simulate, params)
-        for name in ('Cost', 'Successful reqs.', 'Failed reqs.',\
-                'Violated RT reqs.', 'Violated reliability reqs.'):
-            with open(name + '.txt', 'a') as f:
-                for r in results:
-                    f.write(r[name])
+    with Pool(os.cpu_count()) as p:
+         results = p.map(simulate, params)
+    for name in ('Cost', 'Successful reqs.', 'Failed reqs.',\
+            'Violated RT reqs.', 'Violated reliability reqs.'):
+        with open(name + '.txt', 'a') as f:
+            for r in results:
+                f.write(r[name])
