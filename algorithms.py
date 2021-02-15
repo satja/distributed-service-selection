@@ -7,6 +7,8 @@ import numpy as np
 
 from transportation_problem import *
 
+myrandom = Random(17)
+
 def greedy_selection(requests, services, broker, begin_time):
     start = time()
     request_service = []
@@ -60,7 +62,7 @@ def random_selection(requests, services, broker, begin_time):
     for service, throughput in services:
         service_units.extend([service] * throughput)
     service_units.extend([None] * max(0, len(requests) - len(service_units)))
-    request_service = sample(service_units, len(requests))
+    request_service = myrandom.sample(service_units, len(requests))
     service_loads = defaultdict(int)
     for service in request_service:
         service_loads[service] += 1

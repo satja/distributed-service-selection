@@ -16,7 +16,7 @@ class MasterBroker:
         self.id = get_uid()
         self.unsatisfied_users = []
         self.light_load = []
-        self.high_load = defaultdict(list)
+        self.high_load = []
         self.services = set()
         self.balancing = balancing
         logging.debug(f'0, master, {self.id}, __init__, {location}')
@@ -100,13 +100,14 @@ class MasterBroker:
             if distance < best_distance:
                 broker = b
                 best_distance = distance
-        broker.add_service(service, service.throughput)
+        broker.update_service(service, service.throughput)
         self.service_broker_throughput[(service, broker)] = service.throughput
         self.broker_to_services[broker].add(service)
         self.services.add(service)
         logging.info(f'0, master, {self.id}, new_service, {service.id}, {service.throughput}, {broker.id}')
 
-    def selection_report(self, broker, service_loads, unsatisfied_users):
+    def selection_report(self, broker, service_loads,\
+            unsatisfied_users, unanswered_reqs):
         if self.failed:
             return False
         total_load = total_throughput = 0
@@ -115,17 +116,10 @@ class MasterBroker:
             total_load += load
             thr = self.service_broker_throughput[(service, broker)]
             total_throughput += thr
-            if load == thr:
-                self.high_load[service].append(broker)
-            elif thr >= 5 and load <= thr // 2:
-                self.light_load.append((service, broker))
+            self.light_load.extend([(service, broker)] * ((thr - load) // TRANSFER_UNIT))
         logging.info(f'{broker.id}, {len(broker.services)}, {total_throughput}, {len(self.services)}')
         self.broker_free_space[broker] = total_throughput - total_load
-        if not broker.get_services():
-            # Encourange adding services to this broker in balance_brokers:
-            for service in self.services:
-                self.high_load[service].append(broker)
-                logging.debug(f'empty, {service.id}, {broker.id}')
+        self.high_load.extend([broker] * (unanswered_reqs // TRANSFER_UNIT))
         self.unsatisfied_users.extend([(user, broker) for user in unsatisfied_users])
         logging.debug(f'0, master, {self.id}, selection_report, {broker.id}, {total_load}, {total_throughput}')
         return True
@@ -162,7 +156,7 @@ class MasterBroker:
             self.broker_to_users[broker2].add(user)
             logging.debug(f'0, master, {self.id}, unsatisfied_user, {user.id}, {broker.id}, {broker2.id}')
             user_moves += 1
-        self.unsatisfied_users = []
+        self.unsatisfied_users.clear()
         return user_moves
 
     def balance_services(self):
@@ -170,19 +164,15 @@ class MasterBroker:
             return 0
         # Move throughput from brokers with light load to brokers with high load
         service_moves = 0
-        logging.debug([(s.id, b.id) for s, b in self.light_load])
-        while self.light_load:
-            service, broker = self.light_load.pop()
-            logging.debug(f'light_load, {service.id}, {broker.id}')
-            if not self.high_load[service]:
-                continue
-            broker2 = self.high_load[service].pop()
-            source_thr = self.service_broker_throughput[(service, broker)]
-            dest_thr = self.service_broker_throughput[(service, broker2)]
-            transfer = source_thr // 2
-            logging.info(f'0, master, {self.id}, transfer_throughput, {service.id}, {broker.id}, {broker2.id}, {transfer}')
-            source_thr -= transfer
-            dest_thr += transfer
+        while self.light_load and self.high_load:
+            broker2 = self.high_load.pop()
+            distance, i, service, broker = min(
+                    (distance_time(broker2.location, service.location), i, service, broker)
+                    for i, (service, broker) in enumerate(self.light_load))
+            self.light_load.remove((service, broker))
+            source_thr = self.service_broker_throughput[(service, broker)] - TRANSFER_UNIT
+            dest_thr = self.service_broker_throughput[(service, broker2)] + TRANSFER_UNIT
+            logging.info(f'0, master, {self.id}, transfer_throughput, {service.id}, {broker.id}, {broker2.id}')
             broker.update_service(service, source_thr)
             broker2.update_service(service, dest_thr)
             self.service_broker_throughput[(service, broker)] = source_thr
@@ -191,6 +181,7 @@ class MasterBroker:
                 self.broker_to_services[broker].remove(service)
             self.broker_to_services[broker2].add(service)
             service_moves += 1
+        self.light_load.clear()
         self.high_load.clear()
         return service_moves
 

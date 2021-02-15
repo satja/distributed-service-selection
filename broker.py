@@ -47,10 +47,6 @@ class Broker:
         self.users.remove(user)
         logging.debug(f'0, broker, {self.id}, remove_user, {user.id}')
 
-    def add_service(self, service, throughput):
-        self.services[service] = throughput
-        logging.info(f'0, broker, {self.id}, add_service, {service.id}, {throughput}')
-
     def update_brokers_list(self, brokers):
         self.brokers = brokers[:]
         logging.debug(f'0, broker, {self.id}, update_brokers_list')
@@ -59,7 +55,7 @@ class Broker:
         assert throughput >= 0
         logging.info(f'0, broker, {self.id}, update_service, {service.id}, {throughput}')
         if throughput == 0:
-            self.services.pop(service)
+            self.services.pop(service, None)
         else:
             self.services[service] = throughput
 
@@ -110,7 +106,8 @@ class Broker:
                 self.master_broker.service_fail_report(service)
 
         # report to master
-        if not self.master_broker.selection_report(self, service_loads, unsatisfied_users):
+        if not self.master_broker.selection_report(self, service_loads,\
+                unsatisfied_users, unanswered_reqs):
             # master failed -> leader election among brokers
             new_master = leader_election_simple(self.brokers)
             if new_master == self:

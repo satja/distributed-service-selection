@@ -1,4 +1,5 @@
 import sys
+import os
 from random import *
 from math import log
 import numpy as np
@@ -6,6 +7,7 @@ import logging
 from collections import defaultdict
 from time import time
 logging.basicConfig(level=logging.WARNING, stream=sys.stdout)
+from multiprocessing import Pool
 
 from user import User
 from broker import Broker
@@ -18,7 +20,7 @@ def random_service():
     location = util.random_location()
     reliability = 1 - 0.1 ** max(np.random.normal(2, .5), 1)
     computation_time = max(1, np.random.normal(75, 50))
-    throughput = max(1, int(np.random.normal(15, 10)))
+    throughput = max(1, int(np.random.normal(10, 5)))
     cost = max(0, np.random.uniform(-1, 4))
     return Service(location, throughput, reliability, computation_time, cost)
 
@@ -30,7 +32,8 @@ def random_user():
 
 class Simulation:
     def __init__(self, num_users, num_services, num_brokers, algorithm,
-            balance_users, balance_services, ms_per_step=250):
+            balance_users, balance_services, random_seed=0, ms_per_step=250):
+        seed(random_seed)
         self.ms_per_step = ms_per_step
         self.inactive_users = []
         self.users = []
@@ -70,7 +73,7 @@ class Simulation:
                 self.brokers.append(Broker(location, self.master_broker, self.algorithm))
 
             self.master_broker.check_for_failed_brokers()
-            if randrange(100) == 0:
+            if randrange(100) == 0 and len(self.brokers) > 1:
                 self.master_broker.fail()
 
             start = time()
@@ -132,10 +135,10 @@ class Simulation:
                 self.inactive_users -= 1
 
             # Potential service/broker fail
-            if randrange(100) == 0 and len(self.brokers):
+            if t % 100 == 99 and len(self.brokers):
                 choice(self.brokers).fail()
                 self.inactive_brokers += 1
-            if randrange(100) == 0 and len(self.services):
+            if t % 100 == 90 and len(self.services):
                 service = choice(self.services)
                 service.fail()
                 self.inactive_services += 1
@@ -149,6 +152,13 @@ class Simulation:
 
         successful = len(qos) - unanswered_reqs - unsatisfied_rt\
                 - unsatisfied_both - unsatisfied_rel
+
+        print(len(qos), len(self.brokers), self.algorithm, self.balancing)
+
+        return len(qos), total_cost, successful / len(qos), unanswered_reqs / len(qos),\
+                (unsatisfied_rt + unsatisfied_both) / len(qos),\
+                (unsatisfied_rel + unsatisfied_both) / len(qos)
+        '''
         print('total =', len(qos))
         print('cost =', total_cost)
         print('success_rate =', successful / len(qos))
@@ -157,8 +167,30 @@ class Simulation:
         print('unsatisfied_rt =', unsatisfied_rt / len(qos))
         print('unsatisfied_both =', unsatisfied_both / len(qos))
         print('user_moves, service_moves =', user_moves, service_moves)
+        '''
+
+def simulate(params):
+    s = Simulation(*params)
+    results = s.run()
+    ret = s.algorithm.__name__.replace('_selection', '').replace("_", ' ').title().replace('Ap', 'AP').replace("Tp", "TP")
+    if len(s.brokers) == 1:
+        ret += ',single broker,'
+    elif s.balancing[0] and s.balancing[1]:
+        ret += ',user&service balancing,'
+    elif s.balancing[0]:
+        ret += ',user balancing,'
+    elif s.balancing[1]:
+        ret += ',service balancing,'
+    else:
+        ret += ',no balancing,'
+    result = dict()
+    for (i, name) in [(1, 'Cost'), (2, 'Successful reqs.'), (3, 'Failed reqs.'),
+            (4, 'Violated RT reqs.'), (5, 'Violated reliability reqs.')]:
+        result[name] = ret + str(results[i]) + '\n'
+    return result
 
 if __name__ == '__main__':
+    '''
     num_users = int(sys.argv[1])
     num_services = int(sys.argv[2])
     num_brokers = int(sys.argv[3])
@@ -168,3 +200,24 @@ if __name__ == '__main__':
     s = Simulation(num_users, num_services, num_brokers,
             algorithm, balance_users, balance_services)
     s.run()
+    '''
+    for name in ('Cost', 'Successful reqs.', 'Failed reqs.',\
+            'Violated RT reqs.', 'Violated reliability reqs.'):
+        with open(name + '.txt', 'w') as f:
+            f.write('')
+    for random_seed in range(2):
+        print()
+        num_users, num_services = 50, 10
+        params = []
+        for algorithm in range(5):
+            for num_brokers, balance_users, balance_services in [
+                    (1, 0, 0), (10, 0, 0), (10, 1, 0), (10, 0, 1), (10, 1, 1)]:
+                params.append((num_users, num_services, num_brokers, algorithm,
+                    balance_users, balance_services, random_seed))
+        with Pool(os.cpu_count()) as p:
+             results = p.map(simulate, params)
+        for name in ('Cost', 'Successful reqs.', 'Failed reqs.',\
+                'Violated RT reqs.', 'Violated reliability reqs.'):
+            with open(name + '.txt', 'a') as f:
+                for r in results:
+                    f.write(r[name])

@@ -1,7 +1,6 @@
 import numpy as np
 from time import time
 from bisect import insort_left
-from random import choice, randrange
 import sys
 from util import INFEASIBLE
 
