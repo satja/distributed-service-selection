@@ -21,7 +21,7 @@ class Service:
 
     def utility_cost(self, user, request_time, arrival_time):
         if self.failed:
-            return 2 * MAX_COST
+            return INFEASIBLE
         answer_time = arrival_time + self.computation_time +\
                 distance_time(self.location, user.location)
         response_time = answer_time - request_time

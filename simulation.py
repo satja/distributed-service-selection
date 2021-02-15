@@ -18,18 +18,19 @@ def random_service():
     location = util.random_location()
     reliability = 1 - 0.1 ** max(np.random.normal(2, .5), 1)
     computation_time = max(1, np.random.normal(75, 50))
-    throughput = max(1, int(np.random.normal(30, 20)))
+    throughput = max(1, int(np.random.normal(15, 10)))
     cost = max(0, np.random.uniform(-1, 4))
     return Service(location, throughput, reliability, computation_time, cost)
 
 def random_user():
     location = util.random_location()
     min_reliability = 1 - 0.1 ** max(np.random.normal(1.5, .5), 1)
-    max_response_time = randint(300, 1500)
+    max_response_time = randint(400, 1500)
     return User(location, min_reliability, max_response_time)
 
 class Simulation:
-    def __init__(self, num_users, num_services, num_brokers, algorithm, ms_per_step=250):
+    def __init__(self, num_users, num_services, num_brokers, algorithm,
+            balance_users, balance_services, ms_per_step=250):
         self.ms_per_step = ms_per_step
         self.inactive_users = []
         self.users = []
@@ -38,7 +39,8 @@ class Simulation:
         self.inactive_users = num_users
         self.inactive_services = num_services
         self.inactive_brokers = num_brokers
-        self.master_broker = MasterBroker(util.random_location())
+        self.balancing = (balance_users, balance_services)
+        self.master_broker = MasterBroker(util.random_location(), self.balancing)
         if algorithm == 0:
             self.algorithm = algorithms.random_selection
         elif algorithm == 1:
@@ -56,6 +58,7 @@ class Simulation:
         unanswered_reqs = 0
         unsatisfied_rt = unsatisfied_rel = unsatisfied_both = 0
         total_cost = 0
+        user_moves = service_moves = 0
         for t in range(steps):
             if t % 10 == 0:
                 logging.info(f"{t} out of {steps} steps...")
@@ -105,7 +108,9 @@ class Simulation:
             start = time()
 
             # Master load balancing
-            self.master_broker.balance_brokers()
+            moves = self.master_broker.balance_brokers()
+            user_moves += moves[0]
+            service_moves += moves[1]
             total_thr = sum(s.throughput for s in self.services)
             total_thr_alt = sum(broker.total_throughput() for broker in self.brokers)
             assert total_thr == total_thr_alt, f'{total_thr}, {total_thr_alt}'
@@ -137,7 +142,7 @@ class Simulation:
 
             # New requests
             for user in self.users:
-                for num_reqs in range(randrange(4)):
+                for num_reqs in range(randrange(3)):
                     req_time = t * self.ms_per_step + randrange(self.ms_per_step)
                     user.send_request(req_time)
             logging.info('')
@@ -151,11 +156,15 @@ class Simulation:
         print('unsatisfied_rel =', unsatisfied_rel / len(qos))
         print('unsatisfied_rt =', unsatisfied_rt / len(qos))
         print('unsatisfied_both =', unsatisfied_both / len(qos))
+        print('user_moves, service_moves =', user_moves, service_moves)
 
 if __name__ == '__main__':
     num_users = int(sys.argv[1])
     num_services = int(sys.argv[2])
     num_brokers = int(sys.argv[3])
     algorithm = int(sys.argv[4])
-    s = Simulation(num_users, num_services, num_brokers, algorithm)
+    balance_users = int(sys.argv[5])
+    balance_services = int(sys.argv[6])
+    s = Simulation(num_users, num_services, num_brokers,
+            algorithm, balance_users, balance_services)
     s.run()

@@ -16,6 +16,7 @@ class Broker:
         self.failed = False
         self.id = get_uid()
         self.master_broker.new_broker(self)
+        self.balancing = self.master_broker.balancing
         logging.debug(f'0, broker, {self.id}, __init__, {location}, {master_broker.id}')
 
     def total_throughput(self):
@@ -114,7 +115,7 @@ class Broker:
             new_master = leader_election_simple(self.brokers)
             if new_master == self:
                 logging.debug(f'{selection_done_time}, broker, {self.id}, elected')
-                master_broker = MasterBroker(self.location)
+                master_broker = MasterBroker(self.location, self.balancing)
                 self.failed = True
                 master_broker.fill_brokers_data(self.brokers)
 

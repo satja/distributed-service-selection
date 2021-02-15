@@ -4,20 +4,21 @@ import logging
 from util import *
 
 class MasterBroker:
-    def __init__(self, location):
+    def __init__(self, location, balancing=(True, True)):
         self.location = location
         self.brokers = []
         self.broker_to_users = defaultdict(set)
         self.service_broker_throughput = defaultdict(int)
         self.broker_to_services = defaultdict(set)
         self.service_broker_load = defaultdict(int)
-        self.total_broker_load = defaultdict(int)
+        self.broker_free_space = defaultdict(int)
         self.failed = False
         self.id = get_uid()
         self.unsatisfied_users = []
         self.light_load = []
         self.high_load = defaultdict(list)
         self.services = set()
+        self.balancing = balancing
         logging.debug(f'0, master, {self.id}, __init__, {location}')
 
     def new_broker(self, broker):
@@ -50,7 +51,7 @@ class MasterBroker:
 
         # redistribute the users/services from failed brokers
         for broker in failed_brokers:
-            self.total_broker_load.pop(broker, None)
+            self.broker_free_space.pop(broker, None)
             for user in self.broker_to_users[broker]:
                 self.new_user(user)
             self.broker_to_users.pop(broker)
@@ -119,40 +120,40 @@ class MasterBroker:
             elif thr >= 5 and load <= thr // 2:
                 self.light_load.append((service, broker))
         logging.info(f'{broker.id}, {len(broker.services)}, {total_throughput}, {len(self.services)}')
-        if total_throughput:
-            self.total_broker_load[broker] = total_load / total_throughput
-        elif not broker.get_services():
-            # Avoid adding new users to this broker in balance_brokers:
-            self.total_broker_load[broker] = 1
+        self.broker_free_space[broker] = total_throughput - total_load
+        if not broker.get_services():
             # Encourange adding services to this broker in balance_brokers:
             for service in self.services:
                 self.high_load[service].append(broker)
                 logging.debug(f'empty, {service.id}, {broker.id}')
-        else:
-            # Encourage adding users
-            self.total_broker_load[broker] = 0
         self.unsatisfied_users.extend([(user, broker) for user in unsatisfied_users])
         logging.debug(f'0, master, {self.id}, selection_report, {broker.id}, {total_load}, {total_throughput}')
         return True
 
-    def balance_brokers(self):
-        logging.debug(f'0, master, {self.id}, balance_brokers')
-
+    def balance_users(self):
+        if not self.balancing[0]:
+            return 0
         # Move unsatisfied users to close & lightly loaded brokers
-        light_brokers = sorted([(load, broker.id, broker) for broker, load in\
-                self.total_broker_load.items()])[:len(self.brokers) // 5]
+        user_moves = 0
+        light_brokers = sorted([(space, broker.id, broker) for broker, space in\
+                self.broker_free_space.items()], reverse=True)[:len(self.brokers) // 5]
         for user, broker in self.unsatisfied_users:
-            best_score = float('inf')
+            if not light_brokers:
+                break
+            max_score = -float('inf')
+            max_space = light_brokers[0][0]
             old_distance = distance_time(broker.location, user.location)
-            for load, _, b in light_brokers:
+            for space, _, b in light_brokers:
                 if b == broker:
                     continue
                 new_distance = distance_time(b.location, user.location)
-                b_score = load + sigmoid((new_distance - old_distance) / old_distance)
-                if b_score < best_score:
-                    best_score = b_score
+                distance_score = sigmoid((new_distance - old_distance) / old_distance)
+                space_score = space / max(max_space, 1)
+                b_score = space_score - distance_score
+                if b_score > max_score:
+                    max_score = b_score
                     broker2 = b
-            if best_score == float('inf'):
+            if max_score == -float('inf'):
                 continue
             broker.remove_user(user)
             broker2.add_user(user)
@@ -160,9 +161,15 @@ class MasterBroker:
             self.broker_to_users[broker].remove(user)
             self.broker_to_users[broker2].add(user)
             logging.debug(f'0, master, {self.id}, unsatisfied_user, {user.id}, {broker.id}, {broker2.id}')
+            user_moves += 1
         self.unsatisfied_users = []
+        return user_moves
 
+    def balance_services(self):
+        if not self.balancing[1]:
+            return 0
         # Move throughput from brokers with light load to brokers with high load
+        service_moves = 0
         logging.debug([(s.id, b.id) for s, b in self.light_load])
         while self.light_load:
             service, broker = self.light_load.pop()
@@ -183,7 +190,13 @@ class MasterBroker:
             if source_thr == 0:
                 self.broker_to_services[broker].remove(service)
             self.broker_to_services[broker2].add(service)
+            service_moves += 1
         self.high_load.clear()
+        return service_moves
+
+    def balance_brokers(self):
+        logging.debug(f'0, master, {self.id}, balance_brokers')
+        return self.balance_users(), self.balance_services()
 
     def service_fail_report(self, service):
         logging.info(f'0, master, {self.id}, service_fail_report, {service.id}')

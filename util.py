@@ -4,6 +4,7 @@ import math
 KM_PER_MS = 100
 uid = 0
 MAX_COST = 100
+INFEASIBLE = 10**8
 
 def get_uid():
     global uid

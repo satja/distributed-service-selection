@@ -7,10 +7,6 @@ import numpy as np
 
 from transportation_problem import *
 
-def SALSA_selection(requests, services):
-    # TODO: implement
-    return None
-
 def greedy_selection(requests, services, broker, begin_time):
     start = time()
     request_service = []
@@ -97,8 +93,6 @@ def ap_selection(requests, services, broker, begin_time):
     return request_service, service_loads, begin_time + duration_ms
 
 def tp_selection(requests, services, broker, begin_time):
-    if len(services) <= 1:
-        return round_robin_selection(requests, services, broker, begin_time)
     service_loads = defaultdict(int)
     request_service = [None for r in requests]
     if not requests or not services:
@@ -106,18 +100,18 @@ def tp_selection(requests, services, broker, begin_time):
     start = time()
     user_demand = defaultdict(int)
     user_to_req_indices = defaultdict(list)
-    for i, (user, _) in enumerate(requests):
+    user_to_req_time = dict()
+    for i, (user, req_time) in enumerate(requests):
         user_demand[user] += 1
         user_to_req_indices[user].append(i)
+        user_to_req_time[user] = req_time
     users = list(user_demand.keys())
     demand = [user_demand[u] for u in users]
     supply = [thr for service, thr in services]
-    utility_cost = []
-    for s, thr in services:
-        utility_cost.append([s.utility_cost(u, begin_time, begin_time) for u in users])
+    utility_cost = [
+        [s.utility_cost(u, user_to_req_time[u], begin_time) for u in users]
+        for s, thr in services]
     matching = transport(supply, demand, np.array(utility_cost))
-    if matching is None:
-        return greedy_selection(requests, services, broker, begin_time + time() - start)
     for i, (service, thr) in enumerate(services):
         for j, user in enumerate(users):
             for _ in range(matching[i, j]):
