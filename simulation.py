@@ -20,13 +20,13 @@ def random_service():
     location = util.random_location()
     reliability = 1 - 0.1 ** max(np.random.normal(2, .5), 1)
     computation_time = max(1, np.random.normal(75, 50))
-    throughput = max(1, int(np.random.normal(10, 5)))
+    throughput = max(1, int(np.random.normal(15, 10)))
     cost = max(0, np.random.uniform(-1, 4))
     return Service(location, throughput, reliability, computation_time, cost)
 
 def random_user():
     location = util.random_location()
-    min_reliability = 1 - 0.1 ** max(np.random.normal(1.5, .5), 1)
+    min_reliability = 1 - 0.1 ** max(np.random.normal(1.7, .5), 1)
     max_response_time = randint(400, 1500)
     return User(location, min_reliability, max_response_time)
 
@@ -145,7 +145,7 @@ class Simulation:
 
             # New requests
             for user in self.users:
-                for num_reqs in range(randrange(3)):
+                for num_reqs in range(randrange(4)):
                     req_time = t * self.ms_per_step + randrange(self.ms_per_step)
                     user.send_request(req_time)
             logging.info('')
@@ -208,7 +208,7 @@ if __name__ == '__main__':
         with open(name + '.txt', 'w') as f:
             f.write('')
     params = []
-    for random_seed in range(30):
+    for random_seed in range(3):
         num_users, num_services, num_brokers = 1000, 100, 10
         for algorithm in range(5):
             for num_brokers, balance_users, balance_services in [
