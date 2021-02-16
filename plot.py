@@ -1,3 +1,4 @@
+from collections import defaultdict
 import matplotlib.pyplot as plt
 
 for name in ('Cost', 'Successful reqs.', 'Failed reqs.',\
@@ -11,13 +12,15 @@ for name in ('Cost', 'Successful reqs.', 'Failed reqs.',\
             cnt[(alg, broker)] += 1
     positions = []
     names = []
+    heights = []
     for i, broker in enumerate(['single broker', 'user&service balancing',\
             'user balancing', 'service balancing', 'no balancing']):
-        for j, alg in enumerate(list(range('Random', 'Round Robin', 'Greedy', 'AP', "TP"))):
+        for j, alg in enumerate(['Random', 'Round Robin', 'Greedy', 'AP', "TP"]):
             positions.append(i * 6 + j)
             heights.append(res[(alg, broker)] / cnt[(alg, broker)])
-            names.append(broker)
-    plt.bar(positions, heights, align=center)
-    plt.xticks(positions, rotation=45)
+            names.append(alg)
+    plt.bar(positions, heights, align='center')
+    plt.xticks(positions, names, rotation=45)
+    plt.title(name)
     plt.show()
     plt.savefig(name + '.pdf', format='pdf')
