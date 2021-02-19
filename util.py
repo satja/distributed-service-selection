@@ -12,6 +12,10 @@ def get_uid():
     uid += 1
     return uid
 
+selection_times = []
+def avg_selection_time():
+    return sum(selection_times) / len(selection_times)
+
 def leader_election_simple(brokers):
     minimal_hash = float('inf')
     for broker in brokers:

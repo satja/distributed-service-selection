@@ -1,25 +1,25 @@
-Random,single broker,1.1060460987055354
-Random,no balancing,1.0829931878400991
-Random,user balancing,0.9491899724399567
-Random,service balancing,1.1451592752459043
-Random,user&service balancing,0.6902639787173698
-Round Robin,single broker,1.111877554833666
-Round Robin,no balancing,1.1100313771681316
-Round Robin,user balancing,0.9789741300416316
-Round Robin,service balancing,1.1477482265704846
-Round Robin,user&service balancing,0.7358988795577639
-Greedy,single broker,0.9969059171677244
-Greedy,no balancing,1.0008195422174053
-Greedy,user balancing,0.9932253359879598
-Greedy,service balancing,1.053760735398608
-Greedy,user&service balancing,0.897133966395347
-AP,single broker,0.9933204235751666
-AP,no balancing,1.008039657566192
-AP,user balancing,0.9916483822103817
-AP,service balancing,1.0490549842786372
-AP,user&service balancing,0.8827501434020266
-TP,single broker,0.993267582739846
-TP,no balancing,0.9618918959305388
-TP,user balancing,0.9817693795180075
-TP,service balancing,1.045576248785405
-TP,user&service balancing,0.8404319006526139
+Random,single broker,1.239924219718386
+Random,no balancing,1.1611878792733201
+Random,user balancing,1.0734522396382729
+Random,service balancing,1.2321500866768484
+Random,user&service balancing,0.9177192494806446
+Round Robin,single broker,1.2472524155149785
+Round Robin,no balancing,1.2016333810038269
+Round Robin,user balancing,1.138770985346985
+Round Robin,service balancing,1.233190589453449
+Round Robin,user&service balancing,0.9529149434998583
+Greedy,single broker,1.0850406157037147
+Greedy,no balancing,1.0803462375208233
+Greedy,user balancing,1.0507660816157944
+Greedy,service balancing,1.1103999281723052
+Greedy,user&service balancing,0.9650569536180922
+AP,single broker,1.0846706818536134
+AP,no balancing,0.8922166713529222
+AP,user balancing,1.0433012397110772
+AP,service balancing,1.11673987283042
+AP,user&service balancing,0.9201069723285837
+TP,single broker,1.0846706818536171
+TP,no balancing,1.0196734575855944
+TP,user balancing,1.0356242869324823
+TP,service balancing,1.0977641877503148
+TP,user&service balancing,0.9344919972318303

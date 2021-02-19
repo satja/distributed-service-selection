@@ -6,6 +6,7 @@ from scipy.optimize import linear_sum_assignment
 import numpy as np
 
 from transportation_problem import *
+from util import selection_times
 
 myrandom = Random(7777)
 
@@ -36,6 +37,7 @@ def greedy_selection(requests, services, broker, begin_time):
     duration_ms = (time() - start) * 1000
     logging.debug([(s.id, load) for s, load in service_loads.items()])
     logging.info(f'0, greedy_selection, {len(requests)}, {len(services)}, {duration_ms}, {broker.id}, {broker.total_throughput()}')
+    selection_times.append(duration_ms)
     return request_service, service_loads, begin_time + duration_ms
 
 def round_robin_selection(requests, services, broker, begin_time):
@@ -54,6 +56,7 @@ def round_robin_selection(requests, services, broker, begin_time):
     request_service.extend([None] * max(0, len(requests) - len(request_service)))
     duration_ms = (time() - start) * 1000
     logging.info(f'0, round_robin_selection, {len(requests)}, {len(services)}, {duration_ms}, {broker.id}, {broker.total_throughput()}')
+    selection_times.append(duration_ms)
     return request_service, service_loads, begin_time + duration_ms
 
 def random_selection(requests, services, broker, begin_time):
@@ -69,6 +72,7 @@ def random_selection(requests, services, broker, begin_time):
     service_loads.pop(None, None)
     duration_ms = (time() - start) * 1000
     logging.info(f'0, random_selection, {len(requests)}, {len(services)}, {len(service_units)}, {duration_ms}, {broker.id}, {broker.total_throughput()}')
+    selection_times.append(duration_ms)
     return request_service, service_loads, begin_time + duration_ms
 
 def ap_selection(requests, services, broker, begin_time):
@@ -92,6 +96,7 @@ def ap_selection(requests, services, broker, begin_time):
         service_loads[service] += 1
     duration_ms = (time() - start) * 1000
     logging.info(f'0, ap_selection, {len(requests)}, {len(services)}, {len(utility_cost)}, {duration_ms}, {broker.id}, {broker.total_throughput()}')
+    selection_times.append(duration_ms)
     return request_service, service_loads, begin_time + duration_ms
 
 def tp_selection(requests, services, broker, begin_time):
@@ -122,4 +127,5 @@ def tp_selection(requests, services, broker, begin_time):
                 request_service[req_index] = service
     duration_ms = (time() - start) * 1000
     logging.info(f'0, TP_selection, {len(requests)}, {len(services)}, {len(utility_cost)}, {duration_ms}, {broker.id}, {broker.total_throughput()}')
+    selection_times.append(duration_ms)
     return request_service, service_loads, begin_time + duration_ms

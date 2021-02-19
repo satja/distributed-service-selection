@@ -26,7 +26,7 @@ def random_service():
 
 def random_user():
     location = util.random_location()
-    min_reliability = 1 - 0.1 ** max(np.random.normal(1.7, .5), 1)
+    min_reliability = 1 - 0.1 ** max(np.random.normal(1.5, .5), 1)
     max_response_time = randint(400, 1500)
     return User(location, min_reliability, max_response_time)
 
@@ -172,6 +172,7 @@ class Simulation:
 
 def simulate(params):
     s = Simulation(*params)
+    util.selection_times.clear()
     results = s.run()
     ret = s.algorithm.__name__.replace('_selection', '').replace("_", ' ').title().replace('Ap', 'AP').replace("Tp", "TP")
     if len(s.brokers) == 1:
@@ -189,6 +190,7 @@ def simulate(params):
             (4, 'Violated RT reqs.'), (5, 'Violated reliability reqs.')]:
         result[name] = ret + str(results[i]) + '\n'
     #print(result)
+    result['Avg. selection time'] = ret + str(util.avg_selection_time()) + '\n'
     return result
 
 if __name__ == '__main__':
@@ -205,7 +207,7 @@ if __name__ == '__main__':
     '''
     num_tests = int(sys.argv[1])
     for name in ('Cost', 'Successful reqs.', 'Failed reqs.',\
-            'Violated RT reqs.', 'Violated reliability reqs.'):
+            'Violated RT reqs.', 'Violated reliability reqs.', 'Avg. selection time'):
         with open(name + '.txt', 'w') as f:
             f.write('')
     params = []
@@ -220,7 +222,7 @@ if __name__ == '__main__':
     with Pool(min(24, os.cpu_count())) as p:
          results = p.map(simulate, params)
     for name in ('Cost', 'Successful reqs.', 'Failed reqs.',\
-            'Violated RT reqs.', 'Violated reliability reqs.'):
+            'Violated RT reqs.', 'Violated reliability reqs.', 'Avg. selection time'):
         with open(name + '.txt', 'a') as f:
             for r in results:
                 f.write(r[name])
