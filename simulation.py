@@ -145,7 +145,7 @@ class Simulation:
 
             # New requests
             for user in self.users:
-                for num_reqs in range(randrange(3)):
+                for num_reqs in range(randrange(4)):
                     req_time = t * self.ms_per_step + randrange(self.ms_per_step)
                     user.send_request(req_time)
             logging.info('')
@@ -203,12 +203,13 @@ if __name__ == '__main__':
             algorithm, balance_users, balance_services)
     s.run()
     '''
+    num_tests = int(sys.argv[1])
     for name in ('Cost', 'Successful reqs.', 'Failed reqs.',\
             'Violated RT reqs.', 'Violated reliability reqs.'):
         with open(name + '.txt', 'w') as f:
             f.write('')
     params = []
-    for random_seed in range(30):
+    for random_seed in range(num_tests):
         num_users, num_services, num_brokers = 1000, 100, 10
         for algorithm in range(5):
             for num_brokers, balance_users, balance_services in [
