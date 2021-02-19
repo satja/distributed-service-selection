@@ -217,7 +217,7 @@ if __name__ == '__main__':
                     (num_brokers, 0, 1), (num_brokers, 1, 1)]:
                 params.append((num_users, num_services, num_brokers, algorithm,
                     balance_users, balance_services, random_seed))
-    with Pool(min(20, os.cpu_count())) as p:
+    with Pool(min(24, os.cpu_count())) as p:
          results = p.map(simulate, params)
     for name in ('Cost', 'Successful reqs.', 'Failed reqs.',\
             'Violated RT reqs.', 'Violated reliability reqs.'):
