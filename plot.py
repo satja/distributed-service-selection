@@ -11,7 +11,7 @@ def get_label(name):
 plt.rcParams.update({'font.size': 18})
 #plt.figure(figsize=(20,10))
 for name in ('Cost', 'Successful reqs.', 'Failed reqs.',\
-        'Violated RT reqs.', 'Violated reliability reqs.'):
+        'Violated RT reqs.', 'Violated reliability reqs.', 'Avg. selection time'):
     plt.figure(figsize=(20,10))
     res = defaultdict(float)
     cnt = defaultdict(int)
@@ -32,15 +32,24 @@ for name in ('Cost', 'Successful reqs.', 'Failed reqs.',\
         for j, broker in enumerate(['single broker', 'no balancing',\
                 'user balancing', 'service balancing', 'user&service balancing']):
             positions.append(i * 6 + j)
-            heights.append(res[(alg, broker)] / cnt[(alg, broker)])
-            plt.bar(i * 6 + j, res[(alg, broker)] / cnt[(alg, broker)], align='center',
+            if (alg, broker) not in res:
+                heights.append(0)
+            else:
+                heights.append(res[(alg, broker)] / cnt[(alg, broker)])
+            plt.bar(i * 6 + j, heights[-1], align='center',
                     color= colors[j], label=get_label(broker))
         names.append(alg + ' Selection')
         name_positions.append(i * 6 + 2)
-    plt.yticks(np.arange(0,max(heights)+0.05,0.1))
+    if .1 < max(heights) < 1:
+        plt.yticks(np.arange(0,max(heights)+0.05,0.05))
     #plt.bar(positions, heights, align='center', color=colors, label=labels)
     plt.xticks(name_positions, names)  #, rotation=45)
-    plt.title(name.replace('Cost', "Average cost").replace('Succ', 'QoS-succ'))
+    title = name.replace('Cost', "Average cost").replace('Succ', 'QoS-succ')
+    if 'time' in title:
+        title += ' (ms)'
+    #else:
+    #    title += ' (%)'
+    plt.title(title)
     handles, labels = plt.gca().get_legend_handles_labels()
     by_label = OrderedDict(zip(labels, handles))
     plt.legend(by_label.values(), by_label.keys())

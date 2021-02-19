@@ -26,7 +26,7 @@ def random_service():
 
 def random_user():
     location = util.random_location()
-    min_reliability = 1 - 0.1 ** max(np.random.normal(1.5, .5), 1)
+    min_reliability = 1 - 0.1 ** max(np.random.normal(1.6, .5), 1)
     max_response_time = randint(400, 1500)
     return User(location, min_reliability, max_response_time)
 
@@ -145,7 +145,7 @@ class Simulation:
 
             # New requests
             for user in self.users:
-                for num_reqs in range(randrange(4)):
+                for num_reqs in range(randrange(3)):
                     req_time = t * self.ms_per_step + randrange(self.ms_per_step)
                     user.send_request(req_time)
             logging.info('')
