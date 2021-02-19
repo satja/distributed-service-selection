@@ -2,7 +2,7 @@ from random import *
 import math
 
 KM_PER_MS = 100
-MAX_COST = 100
+MAX_COST = 10000
 INFEASIBLE = 10**8
 TRANSFER_UNIT = 1
 

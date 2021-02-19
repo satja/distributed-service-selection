@@ -25,9 +25,12 @@ class Service:
         answer_time = arrival_time + self.computation_time +\
                 distance_time(self.location, user.location)
         response_time = answer_time - request_time
-        if response_time <= user.max_response_time and self.reliability >= user.min_reliability:
-            return self.cost
-        return MAX_COST + self.cost
+        #if response_time <= user.max_response_time and self.reliability >= user.min_reliability:
+        #    return self.cost
+        #return MAX_COST + self.cost
+        if self.reliability >= user.min_reliability:
+            return response_time
+        return MAX_COST + response_time
 
     def serve_request(self, user, request_time, arrival_time):
         if self.failed:
