@@ -1,3 +1,50 @@
-Random,single broker,1.5011486717330873
-Round Robin,single broker,1.4901526679590753
-Greedy,single broker,0.9112855434146475
+Random,single broker,1.5942923062145395
+Random,no balancing,1.5004438903449882
+Random,user balancing,1.3620662535283208
+Random,service balancing,1.5898044394277282
+Random,user&service balancing,1.2984577274215177
+Round Robin,single broker,1.5788005395036078
+Round Robin,no balancing,1.44409138371637
+Round Robin,user balancing,1.4018173501193238
+Round Robin,service balancing,1.5592889148712565
+Round Robin,user&service balancing,1.1700643045797077
+Greedy,single broker,0.9756802656029253
+Greedy,no balancing,0.9697714268827436
+Greedy,user balancing,1.087144658407139
+Greedy,service balancing,1.1240573141783465
+Greedy,user&service balancing,1.0411463787586583
+AP,single broker,0.8799727535099059
+AP,no balancing,0.823461665228518
+AP,user balancing,1.0165807751980203
+AP,service balancing,0.9917077510914806
+AP,user&service balancing,0.9185513553857999
+TP,single broker,1.019160100859068
+TP,no balancing,0.974727114750465
+TP,user balancing,1.0930282154723363
+TP,service balancing,1.08057020560122
+TP,user&service balancing,1.0798873939721072
+Random,single broker,1.7349992885037193
+Random,no balancing,1.4358547226994338
+Random,user balancing,1.5279198479846174
+Random,service balancing,1.6033116984221125
+Random,user&service balancing,1.2973480636386299
+Round Robin,single broker,1.686751751916038
+Round Robin,no balancing,1.370509183079454
+Round Robin,user balancing,1.450580381280935
+Round Robin,service balancing,1.5969978908358073
+Round Robin,user&service balancing,1.331159805897022
+Greedy,single broker,0.9264500827134137
+Greedy,no balancing,0.8418558504983624
+Greedy,user balancing,1.0077775543730463
+Greedy,service balancing,0.9567519775341449
+Greedy,user&service balancing,0.953701508596607
+AP,single broker,0.8550526688331973
+AP,no balancing,0.7555135872654861
+AP,user balancing,0.8518878406441941
+AP,service balancing,0.9879728013213465
+AP,user&service balancing,0.9317782332214273
+TP,single broker,0.9921849547238708
+TP,no balancing,0.9483594358915665
+TP,user balancing,1.0904517099880469
+TP,service balancing,0.9278604558678173
+TP,user&service balancing,1.0285772206322943
