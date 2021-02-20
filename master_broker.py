@@ -185,8 +185,13 @@ class MasterBroker:
         self.high_load.clear()
         return service_moves
 
-    def balance_brokers(self):
+    def balance_brokers(self, parity):
         logging.debug(f'0, master, {self.id}, balance_brokers')
+        if self.balancing[0] and self.balancing[1]:
+            if parity:
+                return self.balance_users(), 0
+            else:
+                return 0, self.balance_services()
         return self.balance_users(), self.balance_services()
 
     def service_fail_report(self, service):

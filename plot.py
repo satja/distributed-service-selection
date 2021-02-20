@@ -10,7 +10,7 @@ def get_label(name):
 
 plt.rcParams.update({'font.size': 18})
 #plt.figure(figsize=(20,10))
-for name in ('Successful reqs.', 'Failed reqs.',\
+for name in ('Successful reqs.', 'Failed reqs.', 'Cost', 'Violated reliability reqs.',
         'Violated RT reqs.', 'Avg. selection time'):
     plt.figure(figsize=(20,10))
     res = defaultdict(float)

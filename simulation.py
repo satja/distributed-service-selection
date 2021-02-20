@@ -22,13 +22,17 @@ def random_service():
     computation_time = max(1, np.random.normal(75, 50))
     throughput = max(1, int(np.random.normal(10, 5)))
     cost = max(0, np.random.uniform(-1, 4))
-    return Service(location, throughput, reliability, computation_time, cost)
+    premium_cost = max(0, np.random.uniform(-1, 4))
+    if cost < premium_cost:
+        cost, premium_cost = premium_cost, cost
+    return Service(location, throughput, reliability, computation_time, cost, premium_cost)
 
 def random_user():
     location = util.random_location()
     min_reliability = 1 - 0.1 ** max(np.random.normal(1.6, .5), 1)
     max_response_time = randint(400, 1500)
-    return User(location, min_reliability, max_response_time)
+    premium = randrange(2)
+    return User(location, min_reliability, max_response_time, premium)
 
 class Simulation:
     def __init__(self, num_users, num_services, num_brokers, algorithm,
@@ -112,7 +116,7 @@ class Simulation:
             start = time()
 
             # Master load balancing
-            moves = self.master_broker.balance_brokers()
+            moves = self.master_broker.balance_brokers(t % 2)
             user_moves += moves[0]
             service_moves += moves[1]
             total_thr = sum(s.throughput for s in self.services)

@@ -2,11 +2,12 @@ from util import *
 import logging
 
 class User:
-    def __init__(self, location, min_reliability, max_response_time):
+    def __init__(self, location, min_reliability, max_response_time, premium):
         self.location = location
         self.min_reliability = min_reliability
         self.max_response_time = max_response_time
         self.id = get_uid()
+        self.premium = premium
         logging.debug(f'0, user, {self.id}, __init__, {location}, {min_reliability}, {max_response_time}')
 
     def send_request(self, request_time):
