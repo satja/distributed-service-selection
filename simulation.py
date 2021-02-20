@@ -78,14 +78,14 @@ class Simulation:
                 self.brokers.append(Broker(location, self.master_broker, self.algorithm))
 
             self.master_broker.check_for_failed_brokers()
+            self.brokers = [broker for broker in self.brokers if not broker.failed]
+            self.services = [service for service in self.services if not service.failed]
             if randrange(100) == 0 and len(self.brokers) > 1:
                 self.master_broker.fail()
 
             start = time()
 
             # Service selection
-            self.brokers = [broker for broker in self.brokers if not broker.failed]
-            self.services = [service for service in self.services if not service.failed]
             for broker in self.brokers:
                 selection_time = t * self.ms_per_step
                 results, unanswered, unsatisfied, cost, loads = broker.perform_selection(selection_time)
@@ -116,9 +116,9 @@ class Simulation:
             start = time()
 
             # Master load balancing
-            moves = self.master_broker.balance_brokers(t % 2)
-            user_moves += moves[0]
-            service_moves += moves[1]
+            self.master_broker.balance_brokers(t % 2)
+            #user_moves += moves[0]
+            #service_moves += moves[1]
             total_thr = sum(s.throughput for s in self.services)
             total_thr_alt = sum(broker.total_throughput() for broker in self.brokers)
             assert total_thr == total_thr_alt, f'{total_thr}, {total_thr_alt}'
@@ -140,10 +140,10 @@ class Simulation:
                 self.inactive_users -= 1
 
             # Potential service/broker fail
-            if randrange(100) == 0 and len(self.brokers) > 1:
+            if randrange(100) == 0 and len(self.brokers):
                 choice(self.brokers).fail()
                 self.inactive_brokers += 1
-            if randrange(100) == 0 and len(self.services) > 1:
+            if randrange(100) == 0 and len(self.services):
                 choice(self.services).fail()
                 self.inactive_services += 1
 
@@ -163,16 +163,6 @@ class Simulation:
                 successful / len(qos), unanswered_reqs / len(qos),\
                 (unsatisfied_rt + unsatisfied_both) / len(qos),\
                 (unsatisfied_rel + unsatisfied_both) / len(qos)
-        '''
-        print('total =', len(qos))
-        print('cost =', total_cost)
-        print('success_rate =', successful / len(qos))
-        print('unanswered_rate =', unanswered_reqs / len(qos))
-        print('unsatisfied_rel =', unsatisfied_rel / len(qos))
-        print('unsatisfied_rt =', unsatisfied_rt / len(qos))
-        print('unsatisfied_both =', unsatisfied_both / len(qos))
-        print('user_moves, service_moves =', user_moves, service_moves)
-        '''
 
 def simulate(params):
     s = Simulation(*params)
@@ -198,17 +188,6 @@ def simulate(params):
     return result
 
 if __name__ == '__main__':
-    '''
-    num_users = int(sys.argv[1])
-    num_services = int(sys.argv[2])
-    num_brokers = int(sys.argv[3])
-    algorithm = int(sys.argv[4])
-    balance_users = int(sys.argv[5])
-    balance_services = int(sys.argv[6])
-    s = Simulation(num_users, num_services, num_brokers,
-            algorithm, balance_users, balance_services)
-    s.run()
-    '''
     num_tests = int(sys.argv[1])
     for name in ('Cost', 'Successful reqs.', 'Failed reqs.',\
             'Violated RT reqs.', 'Violated reliability reqs.', 'Avg. selection time'):

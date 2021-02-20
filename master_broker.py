@@ -156,8 +156,6 @@ class MasterBroker:
             self.broker_to_users[broker2].add(user)
             logging.debug(f'0, master, {self.id}, unsatisfied_user, {user.id}, {broker.id}, {broker2.id}')
             user_moves += 1
-        self.unsatisfied_users.clear()
-        return user_moves
 
     def balance_services(self):
         if not self.balancing[1]:
@@ -181,18 +179,21 @@ class MasterBroker:
                 self.broker_to_services[broker].remove(service)
             self.broker_to_services[broker2].add(service)
             service_moves += 1
-        self.light_load.clear()
-        self.high_load.clear()
-        return service_moves
 
     def balance_brokers(self, parity):
         logging.debug(f'0, master, {self.id}, balance_brokers')
         if self.balancing[0] and self.balancing[1]:
             if parity:
-                return self.balance_users(), 0
+                self.balance_users()
             else:
-                return 0, self.balance_services()
-        return self.balance_users(), self.balance_services()
+                self.balance_services()
+        elif self.balancing[0]:
+            self.balance_users()
+        elif self.balancing[1]:
+            self.balance_services()
+        self.unsatisfied_users.clear()
+        self.light_load.clear()
+        self.high_load.clear()
 
     def service_fail_report(self, service):
         logging.info(f'0, master, {self.id}, service_fail_report, {service.id}')
