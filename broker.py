@@ -17,6 +17,7 @@ class Broker:
         self.id = get_uid()
         self.master_broker.new_broker(self)
         self.balancing = self.master_broker.balancing
+        self.alg_duration = 0
         logging.debug(f'0, broker, {self.id}, __init__, {location}, {master_broker.id}')
 
     def total_throughput(self):

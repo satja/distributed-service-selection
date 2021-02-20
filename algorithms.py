@@ -86,8 +86,9 @@ def ap_selection(requests, services, broker, begin_time):
     for service, thr in services:
         for j in range(thr):
             row_to_service.append(service)
-            utility_cost.append([service.utility_cost(user, req_time, begin_time)\
-                    for user, req_time in requests])
+            utility_cost.append([service.utility_cost(
+                user, req_time, begin_time + broker.alg_duration)
+                for user, req_time in requests])
     row_ind, col_ind = linear_sum_assignment(utility_cost)
     for i, row in enumerate(row_ind):
         request_index = col_ind[i]
@@ -97,6 +98,7 @@ def ap_selection(requests, services, broker, begin_time):
     duration_ms = (time() - start) * 1000
     logging.info(f'0, ap_selection, {len(requests)}, {len(services)}, {len(utility_cost)}, {duration_ms}, {broker.id}, {broker.total_throughput()}')
     selection_times.append(duration_ms)
+    broker.alg_duration = duration_ms
     return request_service, service_loads, begin_time + duration_ms
 
 def tp_selection(requests, services, broker, begin_time):
@@ -116,7 +118,8 @@ def tp_selection(requests, services, broker, begin_time):
     demand = [user_demand[u] for u in users]
     supply = [thr for service, thr in services]
     utility_cost = [
-        [s.utility_cost(u, user_to_req_time[u], begin_time) for u in users]
+        [s.utility_cost(u, user_to_req_time[u], begin_time + broker.alg_duration)
+            for u in users]
         for s, thr in services]
     matching = transport(supply, demand, np.array(utility_cost))
     for i, (service, thr) in enumerate(services):
@@ -128,4 +131,5 @@ def tp_selection(requests, services, broker, begin_time):
     duration_ms = (time() - start) * 1000
     logging.info(f'0, TP_selection, {len(requests)}, {len(services)}, {len(utility_cost)}, {duration_ms}, {broker.id}, {broker.total_throughput()}')
     selection_times.append(duration_ms)
+    broker.alg_duration = duration_ms
     return request_service, service_loads, begin_time + duration_ms

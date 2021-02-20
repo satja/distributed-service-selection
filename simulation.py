@@ -116,7 +116,7 @@ class Simulation:
             start = time()
 
             # Master load balancing
-            self.master_broker.balance_brokers(t % 2)
+            self.master_broker.balance_brokers(t)
             #user_moves += moves[0]
             #service_moves += moves[1]
             total_thr = sum(s.throughput for s in self.services)

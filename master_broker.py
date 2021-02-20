@@ -180,10 +180,10 @@ class MasterBroker:
             self.broker_to_services[broker2].add(service)
             service_moves += 1
 
-    def balance_brokers(self, parity):
+    def balance_brokers(self, iteration):
         logging.debug(f'0, master, {self.id}, balance_brokers')
         if self.balancing[0] and self.balancing[1]:
-            if parity:
+            if iteration % 20 < 10:
                 self.balance_users()
             else:
                 self.balance_services()
