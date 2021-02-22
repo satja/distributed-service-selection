@@ -1,50 +1,750 @@
-Random,single broker,0.6176232854054481
-Random,no balancing,0.5620849704395399
-Random,user balancing,0.5298522924843029
-Random,service balancing,0.585453963234632
-Random,user&service balancing,0.4879251602009439
-Round Robin,single broker,0.6144058108832664
-Round Robin,no balancing,0.556700452986961
-Round Robin,user balancing,0.55217221605068
-Round Robin,service balancing,0.5854376590381731
-Round Robin,user&service balancing,0.4478015192830152
-Greedy,single broker,0.8496960132722325
-Greedy,no balancing,0.753198652187793
-Greedy,user balancing,0.857094101609962
-Greedy,service balancing,0.8539042090275922
-Greedy,user&service balancing,0.8644726022052689
-AP,single broker,0.052047990450466854
-AP,no balancing,0.799553749733481
-AP,user balancing,0.9045894940835777
-AP,service balancing,0.8858513131870935
-AP,user&service balancing,0.8854598218753127
-TP,single broker,0.3678896947993485
-TP,no balancing,0.7728719507068474
-TP,user balancing,0.8685963962864525
-TP,service balancing,0.850385484261477
-TP,user&service balancing,0.8902053119422095
-Random,single broker,0.6590299082644404
-Random,no balancing,0.6189175578220599
-Random,user balancing,0.6183506230403246
-Random,service balancing,0.6653281152856161
-Random,user&service balancing,0.5545293186625728
-Round Robin,single broker,0.652874748278648
-Round Robin,no balancing,0.5978600727459129
-Round Robin,user balancing,0.6394230143465458
-Round Robin,service balancing,0.6738009729782767
-Round Robin,user&service balancing,0.6158852132674846
-Greedy,single broker,0.8501680050803451
-Greedy,no balancing,0.8308963948130813
-Greedy,user balancing,0.9303783591122663
-Greedy,service balancing,0.9282769240627491
-Greedy,user&service balancing,0.9009963251123995
-AP,single broker,0.06901371371612769
-AP,no balancing,0.8544342195365153
-AP,user balancing,0.9429132498099846
-AP,service balancing,0.9044481796530794
-AP,user&service balancing,0.8995246638207899
-TP,single broker,0.3697314427416794
-TP,no balancing,0.8058468573442086
-TP,user balancing,0.9112781307505472
-TP,service balancing,0.8912052332496366
-TP,user&service balancing,0.8439656156556118
+Random,single broker,0.6658307241743846
+Random,no balancing,0.6003504039350902
+Random,user balancing,0.5837238883568067
+Random,service balancing,0.6318141519421546
+Random,user&service balancing,0.6408525936106493
+Round Robin,single broker,0.6397891723192562
+Round Robin,no balancing,0.6125558581797588
+Round Robin,user balancing,0.6986757848803185
+Round Robin,service balancing,0.688183523878618
+Round Robin,user&service balancing,0.6658994617885918
+Greedy,single broker,0.8795691506526165
+Greedy,no balancing,0.8009949601625715
+Greedy,user balancing,0.9355539746718415
+Greedy,service balancing,0.8801853923477627
+Greedy,user&service balancing,0.9103379317730733
+AP,single broker,0.03252646049917606
+AP,no balancing,0.8678483383492348
+AP,user balancing,0.9215791870830184
+AP,service balancing,0.8974106755098896
+AP,user&service balancing,0.9024285325565017
+TP,single broker,0.18861364404259237
+TP,no balancing,0.8144822363412455
+TP,user balancing,0.9068215538812013
+TP,service balancing,0.9180681518006516
+TP,user&service balancing,0.9184935542504334
+Random,single broker,0.7104041979347961
+Random,no balancing,0.6138349504843444
+Random,user balancing,0.6794224650753955
+Random,service balancing,0.6705751485830543
+Random,user&service balancing,0.6546969181168272
+Round Robin,single broker,0.6656695000668239
+Round Robin,no balancing,0.6863603004856911
+Round Robin,user balancing,0.6946394345831172
+Round Robin,service balancing,0.7024426632489074
+Round Robin,user&service balancing,0.6402325944677204
+Greedy,single broker,0.8647010358998061
+Greedy,no balancing,0.8044396701032579
+Greedy,user balancing,0.9377234979386367
+Greedy,service balancing,0.9278936830513564
+Greedy,user&service balancing,0.859106157559007
+AP,single broker,0.03452658824616949
+AP,no balancing,0.8267970322309333
+AP,user balancing,0.9421071286962164
+AP,service balancing,0.9264928066737887
+AP,user&service balancing,0.9012264090486719
+TP,single broker,0.1760664780976975
+TP,no balancing,0.8371329830687662
+TP,user balancing,0.8998451130514531
+TP,service balancing,0.9189099890966871
+TP,user&service balancing,0.9150867363948456
+Random,single broker,0.6459930348965895
+Random,no balancing,0.5959826974090191
+Random,user balancing,0.6433789204156132
+Random,service balancing,0.6604086057271327
+Random,user&service balancing,0.6207294334884113
+Round Robin,single broker,0.6959317384104448
+Round Robin,no balancing,0.6447540985249017
+Round Robin,user balancing,0.6309653719085282
+Round Robin,service balancing,0.6639284633528996
+Round Robin,user&service balancing,0.6345249643252256
+Greedy,single broker,0.8588125880771464
+Greedy,no balancing,0.7574049156035496
+Greedy,user balancing,0.9305625686279224
+Greedy,service balancing,0.9226267997611672
+Greedy,user&service balancing,0.9237076188215451
+AP,single broker,0.035621678805882864
+AP,no balancing,0.8592883458695585
+AP,user balancing,0.9236431611837459
+AP,service balancing,0.9225532980935441
+AP,user&service balancing,0.8979762569118757
+TP,single broker,0.1781876550830697
+TP,no balancing,0.7942687616349088
+TP,user balancing,0.9414640549596781
+TP,service balancing,0.8813453378370256
+TP,user&service balancing,0.9021276936746164
+Random,single broker,0.6902140789656303
+Random,no balancing,0.6746066659117805
+Random,user balancing,0.6344068253219525
+Random,service balancing,0.6510098647269142
+Random,user&service balancing,0.6324802344601963
+Round Robin,single broker,0.7011752850212006
+Round Robin,no balancing,0.5835488483432315
+Round Robin,user balancing,0.6346571742586895
+Round Robin,service balancing,0.6821047779381113
+Round Robin,user&service balancing,0.6372768002533247
+Greedy,single broker,0.8622085451519311
+Greedy,no balancing,0.8115224374710677
+Greedy,user balancing,0.8839857751120591
+Greedy,service balancing,0.9138308020987402
+Greedy,user&service balancing,0.8753304331015085
+AP,single broker,0.0378752984385654
+AP,no balancing,0.8006103498992101
+AP,user balancing,0.9485824291565326
+AP,service balancing,0.9506035000295662
+AP,user&service balancing,0.90742783185526
+TP,single broker,0.18472150429715864
+TP,no balancing,0.7963185586798585
+TP,user balancing,0.8931111104429323
+TP,service balancing,0.875237033408563
+TP,user&service balancing,0.8395411941297538
+Random,single broker,0.6954896017886618
+Random,no balancing,0.6337386398808421
+Random,user balancing,0.605979908613558
+Random,service balancing,0.6897071964672835
+Random,user&service balancing,0.629684765414858
+Round Robin,single broker,0.6742484702036533
+Round Robin,no balancing,0.6197863807456135
+Round Robin,user balancing,0.5991441656215818
+Round Robin,service balancing,0.7279515652900611
+Round Robin,user&service balancing,0.6123734312285462
+Greedy,single broker,0.8296791103954673
+Greedy,no balancing,0.8421292133874186
+Greedy,user balancing,0.92514105188485
+Greedy,service balancing,0.8947595646259594
+Greedy,user&service balancing,0.8979590609395015
+AP,single broker,0.03512487161740878
+AP,no balancing,0.854260655898699
+AP,user balancing,0.9054764292074888
+AP,service balancing,0.8730574074723382
+AP,user&service balancing,0.9054352934809949
+TP,single broker,0.18357340242318948
+TP,no balancing,0.8448069302368445
+TP,user balancing,0.9168751378114539
+TP,service balancing,0.8826274659927005
+TP,user&service balancing,0.9412751459278001
+Random,single broker,0.6607439848925951
+Random,no balancing,0.6027807143680263
+Random,user balancing,0.6514422016435324
+Random,service balancing,0.6959092220868338
+Random,user&service balancing,0.5985043529502551
+Round Robin,single broker,0.6484223899468076
+Round Robin,no balancing,0.6439421796550698
+Round Robin,user balancing,0.674607129072198
+Round Robin,service balancing,0.6839930280272103
+Round Robin,user&service balancing,0.6352613370284316
+Greedy,single broker,0.8174202536500628
+Greedy,no balancing,0.8195983948622765
+Greedy,user balancing,0.8934102797190883
+Greedy,service balancing,0.8894433581123947
+Greedy,user&service balancing,0.9064531002545958
+AP,single broker,0.0345335990518557
+AP,no balancing,0.8284885672740537
+AP,user balancing,0.9380820192942936
+AP,service balancing,0.8695712308433967
+AP,user&service balancing,0.9308017951745163
+TP,single broker,0.18634471240143557
+TP,no balancing,0.812235576585839
+TP,user balancing,0.8981554793408475
+TP,service balancing,0.9027888550003808
+TP,user&service balancing,0.9119901870591843
+Random,single broker,0.6786890384158456
+Random,no balancing,0.6694801807457514
+Random,user balancing,0.6581145238252567
+Random,service balancing,0.6392207084796065
+Random,user&service balancing,0.6204410474928014
+Round Robin,single broker,0.687611155430047
+Round Robin,no balancing,0.6463958934384942
+Round Robin,user balancing,0.6392961729982654
+Round Robin,service balancing,0.6785223553541885
+Round Robin,user&service balancing,0.6339757377699546
+Greedy,single broker,0.8753171966588955
+Greedy,no balancing,0.8739121076053602
+Greedy,user balancing,0.8983232383291843
+Greedy,service balancing,0.9182860713506066
+Greedy,user&service balancing,0.9199279562852034
+AP,single broker,0.03442952436605393
+AP,no balancing,0.9118473296504608
+AP,user balancing,0.8774163574356623
+AP,service balancing,0.9504579162681702
+AP,user&service balancing,0.8950620126788597
+TP,single broker,0.18535485071156171
+TP,no balancing,0.8034232432632611
+TP,user balancing,0.9156462489702398
+TP,service balancing,0.92171999455102
+TP,user&service balancing,0.9188470852282795
+Random,single broker,0.6632860101995082
+Random,no balancing,0.6004296024974652
+Random,user balancing,0.6434626231659729
+Random,service balancing,0.6518855892510241
+Random,user&service balancing,0.6204019141824245
+Round Robin,single broker,0.6807326576758459
+Round Robin,no balancing,0.6199798814528636
+Round Robin,user balancing,0.6398750517194915
+Round Robin,service balancing,0.6949576126821252
+Round Robin,user&service balancing,0.6537401783871414
+Greedy,single broker,0.8419420059009556
+Greedy,no balancing,0.7919476736031802
+Greedy,user balancing,0.890877172942637
+Greedy,service balancing,0.9359731721148702
+Greedy,user&service balancing,0.9034840618226312
+AP,single broker,0.034668836202719724
+AP,no balancing,0.8581921079448612
+AP,user balancing,0.9492041027224187
+AP,service balancing,0.9469357976166257
+AP,user&service balancing,0.9236970964665528
+TP,single broker,0.18522499934390751
+TP,no balancing,0.8180254595868126
+TP,user balancing,0.9211932020821729
+TP,service balancing,0.8827163462501854
+TP,user&service balancing,0.9064621556415867
+Random,single broker,0.6638970150884306
+Random,no balancing,0.6585085108129263
+Random,user balancing,0.5888173893898302
+Random,service balancing,0.6744056904036972
+Random,user&service balancing,0.5763742050715236
+Round Robin,single broker,0.7096951378646905
+Round Robin,no balancing,0.5932385242775973
+Round Robin,user balancing,0.6726502216446423
+Round Robin,service balancing,0.7258049991895478
+Round Robin,user&service balancing,0.6538149724356331
+Greedy,single broker,0.8499632312405991
+Greedy,no balancing,0.8551146428607171
+Greedy,user balancing,0.8760539595263535
+Greedy,service balancing,0.8709995017199667
+Greedy,user&service balancing,0.856036981289181
+AP,single broker,0.03252474125862809
+AP,no balancing,0.736684241593549
+AP,user balancing,0.9630192380837987
+AP,service balancing,0.9166855906947803
+AP,user&service balancing,0.9148591177833584
+TP,single broker,0.1824234246445095
+TP,no balancing,0.8283831189752436
+TP,user balancing,0.9511585310926725
+TP,service balancing,0.9427290293464567
+TP,user&service balancing,0.9118301561318055
+Random,single broker,0.6518798748495013
+Random,no balancing,0.626683984261951
+Random,user balancing,0.6920832218879696
+Random,service balancing,0.6949772082652952
+Random,user&service balancing,0.6267473881146076
+Round Robin,single broker,0.6408781049554465
+Round Robin,no balancing,0.5948634666543848
+Round Robin,user balancing,0.674217057120084
+Round Robin,service balancing,0.7029214603497503
+Round Robin,user&service balancing,0.6677835105759609
+Greedy,single broker,0.8666498905357457
+Greedy,no balancing,0.763812673456531
+Greedy,user balancing,0.9450536464999089
+Greedy,service balancing,0.8489354755356674
+Greedy,user&service balancing,0.934416591802049
+AP,single broker,0.03121804008729334
+AP,no balancing,0.7514388024678629
+AP,user balancing,0.8768294184604203
+AP,service balancing,0.9200841703990086
+AP,user&service balancing,0.8916519076877177
+TP,single broker,0.18269026545109374
+TP,no balancing,0.8037566018372506
+TP,user balancing,0.9367605590096308
+TP,service balancing,0.9191083720762605
+TP,user&service balancing,0.9500345848961602
+Random,single broker,0.6130629452247757
+Random,no balancing,0.6197815818297228
+Random,user balancing,0.6466084815485782
+Random,service balancing,0.7313423422792119
+Random,user&service balancing,0.5395071570791585
+Round Robin,single broker,0.6781226512766491
+Round Robin,no balancing,0.6256785702483559
+Round Robin,user balancing,0.6476289480845887
+Round Robin,service balancing,0.6760871785321663
+Round Robin,user&service balancing,0.6434878288824879
+Greedy,single broker,0.8043802406234719
+Greedy,no balancing,0.813668059412244
+Greedy,user balancing,0.904645922059624
+Greedy,service balancing,0.9160039447929234
+Greedy,user&service balancing,0.9646921146390076
+AP,single broker,0.03086208596512056
+AP,no balancing,0.8707369200814852
+AP,user balancing,0.9469418888307195
+AP,service balancing,0.891633098329944
+AP,user&service balancing,0.930240379225854
+TP,single broker,0.18278798537510993
+TP,no balancing,0.8410729645105443
+TP,user balancing,0.9571263662385276
+TP,service balancing,0.9172955285492784
+TP,user&service balancing,0.9437829516027479
+Random,single broker,0.7024147079508627
+Random,no balancing,0.6179508556472316
+Random,user balancing,0.6338891434082221
+Random,service balancing,0.6080050424833229
+Random,user&service balancing,0.6314955614664787
+Round Robin,single broker,0.6762116702590902
+Round Robin,no balancing,0.6347728502434821
+Round Robin,user balancing,0.666209673620778
+Round Robin,service balancing,0.6856530950534065
+Round Robin,user&service balancing,0.6100969157167042
+Greedy,single broker,0.7752173415172713
+Greedy,no balancing,0.7939378275195021
+Greedy,user balancing,0.9397146737087908
+Greedy,service balancing,0.9143574655373528
+Greedy,user&service balancing,0.9064493473105427
+AP,single broker,0.030545768492988276
+AP,no balancing,0.8276983935336548
+AP,user balancing,0.9648102392074113
+AP,service balancing,0.916573819505118
+AP,user&service balancing,0.8951211034886178
+TP,single broker,0.1810782574153884
+TP,no balancing,0.8301143710594108
+TP,user balancing,0.9291157276451969
+TP,service balancing,0.8955070580183437
+TP,user&service balancing,0.905871385827482
+Random,single broker,0.6861538834035659
+Random,no balancing,0.6145853748285144
+Random,user balancing,0.577395498746095
+Random,service balancing,0.6966452819433263
+Random,user&service balancing,0.6701396916714458
+Round Robin,single broker,0.6952681107954546
+Round Robin,no balancing,0.6485653227411321
+Round Robin,user balancing,0.6642672617190937
+Round Robin,service balancing,0.6719512256115554
+Round Robin,user&service balancing,0.6537407896750345
+Greedy,single broker,0.8238734149121834
+Greedy,no balancing,0.8603660859921054
+Greedy,user balancing,0.8888966686505059
+Greedy,service balancing,0.9130988287437797
+Greedy,user&service balancing,0.8998542104968442
+AP,single broker,0.02809374129951459
+AP,no balancing,0.832668625629756
+AP,user balancing,0.9305786148928424
+AP,service balancing,0.9350453247733761
+AP,user&service balancing,0.906061221407186
+TP,single broker,0.18481041516194505
+TP,no balancing,0.8740849253291069
+TP,user balancing,0.9438783627603529
+TP,service balancing,0.9298379660650816
+TP,user&service balancing,0.8798323092677931
+Random,single broker,0.7450137843497102
+Random,no balancing,0.6613603328254399
+Random,user balancing,0.6476039237557034
+Random,service balancing,0.654094927943328
+Random,user&service balancing,0.6040628098180398
+Round Robin,single broker,0.6865448261574764
+Round Robin,no balancing,0.6302807977456842
+Round Robin,user balancing,0.6647869184748102
+Round Robin,service balancing,0.7143744253454938
+Round Robin,user&service balancing,0.6830995714504515
+Greedy,single broker,0.849883534684432
+Greedy,no balancing,0.810772562106638
+Greedy,user balancing,0.9048225307869068
+Greedy,service balancing,0.8866629343006771
+Greedy,user&service balancing,0.903359753862425
+AP,single broker,0.040591655104323825
+AP,no balancing,0.8251658534240319
+AP,user balancing,0.9049158394821384
+AP,service balancing,0.9484432161941989
+AP,user&service balancing,0.9011267901747501
+TP,single broker,0.18942603957504475
+TP,no balancing,0.7505766593918609
+TP,user balancing,0.932293408580681
+TP,service balancing,0.9331820630568746
+TP,user&service balancing,0.9378589816790376
+Random,single broker,0.6672048941020702
+Random,no balancing,0.6391845782321915
+Random,user balancing,0.6814712679587774
+Random,service balancing,0.6845107011129238
+Random,user&service balancing,0.5753114711445126
+Round Robin,single broker,0.7513954556234516
+Round Robin,no balancing,0.6671388016912777
+Round Robin,user balancing,0.6475015467044684
+Round Robin,service balancing,0.689588602715146
+Round Robin,user&service balancing,0.6821164466207048
+Greedy,single broker,0.8765911113712368
+Greedy,no balancing,0.7743163079880457
+Greedy,user balancing,0.9251587702016562
+Greedy,service balancing,0.9015969910717504
+Greedy,user&service balancing,0.9197553418856894
+AP,single broker,0.04582306532572038
+AP,no balancing,0.8478505881505088
+AP,user balancing,0.9220948509756415
+AP,service balancing,0.9265266812565449
+AP,user&service balancing,0.8989079791206569
+TP,single broker,0.19618621276355266
+TP,no balancing,0.8620003604613906
+TP,user balancing,0.8796337912277664
+TP,service balancing,0.9312947522706522
+TP,user&service balancing,0.8730485292262595
+Random,single broker,0.688531078090228
+Random,no balancing,0.6604763446756848
+Random,user balancing,0.6617429037971715
+Random,service balancing,0.6320790562494799
+Random,user&service balancing,0.6289310571938685
+Round Robin,single broker,0.6784804962721744
+Round Robin,no balancing,0.6709426941479204
+Round Robin,user balancing,0.559364525027666
+Round Robin,service balancing,0.6880012670447084
+Round Robin,user&service balancing,0.6868252141874908
+Greedy,single broker,0.8266326661078831
+Greedy,no balancing,0.8564833842915142
+Greedy,user balancing,0.9375654787505476
+Greedy,service balancing,0.9420394603622045
+Greedy,user&service balancing,0.8962444628486976
+AP,single broker,0.03543414950938112
+AP,no balancing,0.8275194847640874
+AP,user balancing,0.9206083180639031
+AP,service balancing,0.9578618168400324
+AP,user&service balancing,0.9400628511570327
+TP,single broker,0.17697007457257
+TP,no balancing,0.8418804318723997
+TP,user balancing,0.9602630017004075
+TP,service balancing,0.8770246492111952
+TP,user&service balancing,0.9432122685408042
+Random,single broker,0.6674473941205579
+Random,no balancing,0.6736765169681163
+Random,user balancing,0.5767294665580066
+Random,service balancing,0.6952582897085574
+Random,user&service balancing,0.6381093752502363
+Round Robin,single broker,0.6637204084985271
+Round Robin,no balancing,0.5678583192582366
+Round Robin,user balancing,0.7093006612945038
+Round Robin,service balancing,0.6982131701613032
+Round Robin,user&service balancing,0.6534740888681994
+Greedy,single broker,0.8727879227637361
+Greedy,no balancing,0.8192173882573198
+Greedy,user balancing,0.937668174901898
+Greedy,service balancing,0.9232574994644313
+Greedy,user&service balancing,0.9131585798105613
+AP,single broker,0.038703409576483674
+AP,no balancing,0.8522113785816465
+AP,user balancing,0.94097502034671
+AP,service balancing,0.9378069411493839
+AP,user&service balancing,0.9356057117458385
+TP,single broker,0.17994624409052842
+TP,no balancing,0.8164132381487255
+TP,user balancing,0.8508285024880105
+TP,service balancing,0.925747114468109
+TP,user&service balancing,0.9137864404268228
+Random,single broker,0.6484067759626876
+Random,no balancing,0.6391858575250668
+Random,user balancing,0.6648563281333609
+Random,service balancing,0.7035029699919774
+Random,user&service balancing,0.6560111410803326
+Round Robin,single broker,0.6556077711958235
+Round Robin,no balancing,0.6644452736044687
+Round Robin,user balancing,0.5670765206409694
+Round Robin,service balancing,0.6749577841268317
+Round Robin,user&service balancing,0.6014431145989826
+Greedy,single broker,0.8334530393716696
+Greedy,no balancing,0.8520497004987853
+Greedy,user balancing,0.909048988010571
+Greedy,service balancing,0.9111914621216668
+Greedy,user&service balancing,0.9478544856388716
+AP,single broker,0.025960868291598906
+AP,no balancing,0.8566966290561497
+AP,user balancing,0.9354178796008972
+AP,service balancing,0.9392349978241405
+AP,user&service balancing,0.8993096674561516
+TP,single broker,0.41482353963223995
+TP,no balancing,0.8021866341238959
+TP,user balancing,0.9350701835816835
+TP,service balancing,0.9258133049528481
+TP,user&service balancing,0.8960651625563342
+Random,single broker,0.6768254975506443
+Random,no balancing,0.6592207022311858
+Random,user balancing,0.6685421559446968
+Random,service balancing,0.6827941376741354
+Random,user&service balancing,0.605744365625841
+Round Robin,single broker,0.6641062017007793
+Round Robin,no balancing,0.5911066730499963
+Round Robin,user balancing,0.6640327210160821
+Round Robin,service balancing,0.6400383318246269
+Round Robin,user&service balancing,0.6329154361582702
+Greedy,single broker,0.845029411110954
+Greedy,no balancing,0.7758805091280531
+Greedy,user balancing,0.9442425807588206
+Greedy,service balancing,0.9115252995112105
+Greedy,user&service balancing,0.9349017064115308
+AP,single broker,0.03265076832766353
+AP,no balancing,0.8096086050797212
+AP,user balancing,0.9453273928714457
+AP,service balancing,0.9084063812057306
+AP,user&service balancing,0.9003621175215023
+TP,single broker,0.37160754518726574
+TP,no balancing,0.8360818453975736
+TP,user balancing,0.918021478765016
+TP,service balancing,0.8881583953796675
+TP,user&service balancing,0.8742343572605659
+Random,single broker,0.6611514742637279
+Random,no balancing,0.5852942766146129
+Random,user balancing,0.5328929389070357
+Random,service balancing,0.658625139016658
+Random,user&service balancing,0.5729458390489941
+Round Robin,single broker,0.6906119426988351
+Round Robin,no balancing,0.6068005879078411
+Round Robin,user balancing,0.6822299484138227
+Round Robin,service balancing,0.6713080743078922
+Round Robin,user&service balancing,0.6069644077172464
+Greedy,single broker,0.8575352940343524
+Greedy,no balancing,0.7733182673898052
+Greedy,user balancing,0.9463546518550686
+Greedy,service balancing,0.9517669312142836
+Greedy,user&service balancing,0.9365342290396612
+AP,single broker,0.03232191441373102
+AP,no balancing,0.8182820309496348
+AP,user balancing,0.9184453309686756
+AP,service balancing,0.9448460693651456
+AP,user&service balancing,0.8574780991876134
+TP,single broker,0.42585694389800116
+TP,no balancing,0.8058184970901507
+TP,user balancing,0.9413253612556223
+TP,service balancing,0.8822460177806071
+TP,user&service balancing,0.9105275589290289
+Random,single broker,0.7151300847891733
+Random,no balancing,0.646514764245987
+Random,user balancing,0.6439597406201195
+Random,service balancing,0.6915789547497668
+Random,user&service balancing,0.675585270883074
+Round Robin,single broker,0.6444093488240938
+Round Robin,no balancing,0.5603302572508018
+Round Robin,user balancing,0.7083648532881784
+Round Robin,service balancing,0.7115867617077337
+Round Robin,user&service balancing,0.6119086716634289
+Greedy,single broker,0.8353301673405051
+Greedy,no balancing,0.7904499717490353
+Greedy,user balancing,0.9282230069877526
+Greedy,service balancing,0.9154436959231191
+Greedy,user&service balancing,0.8636609133495328
+AP,single broker,0.03708734082457788
+AP,no balancing,0.8669532626761629
+AP,user balancing,0.953241508545317
+AP,service balancing,0.9531306347819816
+AP,user&service balancing,0.8899557009145391
+TP,single broker,0.1797362583414563
+TP,no balancing,0.8369915974637104
+TP,user balancing,0.9184038493911677
+TP,service balancing,0.9319957283195185
+TP,user&service balancing,0.8812303567617824
+Random,single broker,0.6532525669132774
+Random,no balancing,0.5887600088901169
+Random,user balancing,0.6161220026118237
+Random,service balancing,0.6360106660901212
+Random,user&service balancing,0.5957761907813577
+Round Robin,single broker,0.6405790638689408
+Round Robin,no balancing,0.6879133968609865
+Round Robin,user balancing,0.6958065123056476
+Round Robin,service balancing,0.6191001462420009
+Round Robin,user&service balancing,0.606682541747126
+Greedy,single broker,0.8653825588129065
+Greedy,no balancing,0.7389647592966273
+Greedy,user balancing,0.9105456539950937
+Greedy,service balancing,0.941377926073198
+Greedy,user&service balancing,0.9179047944993
+AP,single broker,0.035072745377558646
+AP,no balancing,0.7796283560918429
+AP,user balancing,0.8739408126668943
+AP,service balancing,0.9085795866388476
+AP,user&service balancing,0.8915877020315485
+TP,single broker,0.2013962661985543
+TP,no balancing,0.7394141959533655
+TP,user balancing,0.9388860965318926
+TP,service balancing,0.9160368849053601
+TP,user&service balancing,0.8437342024943667
+Random,single broker,0.6894183740445624
+Random,no balancing,0.623244028318066
+Random,user balancing,0.6518179812686762
+Random,service balancing,0.6985231096796312
+Random,user&service balancing,0.6412742063249649
+Round Robin,single broker,0.6709765102768799
+Round Robin,no balancing,0.6344586250310743
+Round Robin,user balancing,0.6995159760013961
+Round Robin,service balancing,0.6143537993287164
+Round Robin,user&service balancing,0.6193929739667082
+Greedy,single broker,0.8317182544243282
+Greedy,no balancing,0.8352298762409246
+Greedy,user balancing,0.9043020474770904
+Greedy,service balancing,0.9400672111578942
+Greedy,user&service balancing,0.8845197907779055
+AP,single broker,0.027428195814291578
+AP,no balancing,0.8534383908202663
+AP,user balancing,0.9530454830221776
+AP,service balancing,0.9078696510730431
+AP,user&service balancing,0.8853077272312717
+TP,single broker,0.18953111720708812
+TP,no balancing,0.8312872366870073
+TP,user balancing,0.885869287323455
+TP,service balancing,0.9010600565056119
+TP,user&service balancing,0.9073378346952359
+Random,single broker,0.6801333450373469
+Random,no balancing,0.6131182939873903
+Random,user balancing,0.6391603340576317
+Random,service balancing,0.6923756505870041
+Random,user&service balancing,0.6766620781278762
+Round Robin,single broker,0.6612912339044752
+Round Robin,no balancing,0.6337069836005528
+Round Robin,user balancing,0.6483104242841256
+Round Robin,service balancing,0.6871552860638045
+Round Robin,user&service balancing,0.6778016464728164
+Greedy,single broker,0.8549518355750877
+Greedy,no balancing,0.8469223264540338
+Greedy,user balancing,0.8672105912253906
+Greedy,service balancing,0.9027775415440613
+Greedy,user&service balancing,0.9306830856645543
+AP,single broker,0.03720414051938094
+AP,no balancing,0.7577562372605585
+AP,user balancing,0.9158719393746612
+AP,service balancing,0.9365441474433055
+AP,user&service balancing,0.9008001825100536
+TP,single broker,0.2299644678142157
+TP,no balancing,0.7975431892524533
+TP,user balancing,0.9639151434150713
+TP,service balancing,0.9021520450527561
+TP,user&service balancing,0.9111215356162999
+Random,single broker,0.6274659385147557
+Random,no balancing,0.6211889365548438
+Random,user balancing,0.6405881651025649
+Random,service balancing,0.6062699916774459
+Random,user&service balancing,0.5727910277795599
+Round Robin,single broker,0.6515165122589408
+Round Robin,no balancing,0.6399844448921215
+Round Robin,user balancing,0.6614673952261447
+Round Robin,service balancing,0.6590743485891318
+Round Robin,user&service balancing,0.6377081485465221
+Greedy,single broker,0.829001432867147
+Greedy,no balancing,0.852308564934746
+Greedy,user balancing,0.9008269018190638
+Greedy,service balancing,0.9551636835258059
+Greedy,user&service balancing,0.9207576021756863
+AP,single broker,0.034823225035669814
+AP,no balancing,0.8701635722683912
+AP,user balancing,0.9441367601545838
+AP,service balancing,0.8976368877236026
+AP,user&service balancing,0.9290635320144923
+TP,single broker,0.2593243239152524
+TP,no balancing,0.8004073299342399
+TP,user balancing,0.9047233792989369
+TP,service balancing,0.8918271278541513
+TP,user&service balancing,0.8979383850398884
+Random,single broker,0.7296723251943183
+Random,no balancing,0.6283790752937336
+Random,user balancing,0.6406169593746308
+Random,service balancing,0.6776732063055296
+Random,user&service balancing,0.6818411684299598
+Round Robin,single broker,0.6005924540383529
+Round Robin,no balancing,0.6178207015330389
+Round Robin,user balancing,0.6499816198381544
+Round Robin,service balancing,0.6899705118127976
+Round Robin,user&service balancing,0.6549677274670441
+Greedy,single broker,0.8784842391858688
+Greedy,no balancing,0.8346049660269281
+Greedy,user balancing,0.8728196131678342
+Greedy,service balancing,0.9291558699021583
+Greedy,user&service balancing,0.9486229216651513
+AP,single broker,0.0314065327688728
+AP,no balancing,0.8202888884883225
+AP,user balancing,0.9224930539911391
+AP,service balancing,0.9042151616856642
+AP,user&service balancing,0.9529796827520727
+TP,single broker,0.4645632313226778
+TP,no balancing,0.7816898799265801
+TP,user balancing,0.8950472300485471
+TP,service balancing,0.906949828597059
+TP,user&service balancing,0.8733931520610219
+Random,single broker,0.6848237120380015
+Random,no balancing,0.5905052056374466
+Random,user balancing,0.5725988864691375
+Random,service balancing,0.6104489236923829
+Random,user&service balancing,0.5873422967538884
+Round Robin,single broker,0.6333432633771876
+Round Robin,no balancing,0.6508180588633973
+Round Robin,user balancing,0.6291884498267194
+Round Robin,service balancing,0.6620263960854349
+Round Robin,user&service balancing,0.6475951308079888
+Greedy,single broker,0.8247551155222513
+Greedy,no balancing,0.8037568403783266
+Greedy,user balancing,0.9033202958804385
+Greedy,service balancing,0.9268543705066762
+Greedy,user&service balancing,0.8785360418754248
+AP,single broker,0.03944170269331034
+AP,no balancing,0.8082482482482483
+AP,user balancing,0.9645653758651628
+AP,service balancing,0.8969552432471398
+AP,user&service balancing,0.9083761484510987
+TP,single broker,0.47365317571202636
+TP,no balancing,0.8163793077555368
+TP,user balancing,0.9476442149335378
+TP,service balancing,0.9094975880905024
+TP,user&service balancing,0.8711307757513769
+Random,single broker,0.7547431828564686
+Random,no balancing,0.6638353040659009
+Random,user balancing,0.6054372315902092
+Random,service balancing,0.665807066951597
+Random,user&service balancing,0.6396601991859774
+Round Robin,single broker,0.6564695346646685
+Round Robin,no balancing,0.6099752817252093
+Round Robin,user balancing,0.6309771726472634
+Round Robin,service balancing,0.7565862641799808
+Round Robin,user&service balancing,0.6128090108444558
+Greedy,single broker,0.8423369367915776
+Greedy,no balancing,0.7302216299621265
+Greedy,user balancing,0.9009248258438335
+Greedy,service balancing,0.928016279598701
+Greedy,user&service balancing,0.9066945673754034
+AP,single broker,0.04157746285709676
+AP,no balancing,0.8351051836768641
+AP,user balancing,0.9525926074366502
+AP,service balancing,0.9065600365543149
+AP,user&service balancing,0.9345363185485609
+TP,single broker,0.48289677761575434
+TP,no balancing,0.8611477413924405
+TP,user balancing,0.9554822216498926
+TP,service balancing,0.8807627511878526
+TP,user&service balancing,0.8997628453745831
+Random,single broker,0.6998809553962666
+Random,no balancing,0.6382752060113914
+Random,user balancing,0.6324732718746499
+Random,service balancing,0.6334526658715611
+Random,user&service balancing,0.6359741906072045
+Round Robin,single broker,0.6730260718388883
+Round Robin,no balancing,0.6302015812807094
+Round Robin,user balancing,0.6459766090062329
+Round Robin,service balancing,0.6678362608204969
+Round Robin,user&service balancing,0.6647293199913169
+Greedy,single broker,0.8552868064378213
+Greedy,no balancing,0.8006802530485303
+Greedy,user balancing,0.9086408762409662
+Greedy,service balancing,0.9054232235216438
+Greedy,user&service balancing,0.8756679850439387
+AP,single broker,0.03738692693522227
+AP,no balancing,0.7983651607778641
+AP,user balancing,0.9389596199334803
+AP,service balancing,0.9354637669561042
+AP,user&service balancing,0.9228713268428428
+TP,single broker,0.23925083297623498
+TP,no balancing,0.8590144092507289
+TP,user balancing,0.9248254336647926
+TP,service balancing,0.9242451366809917
+TP,user&service balancing,0.9556645910801118
+Random,single broker,0.6739798971949128
+Random,no balancing,0.5206698241881624
+Random,user balancing,0.6686946969060282
+Random,service balancing,0.6224327518858096
+Random,user&service balancing,0.61184769394708
+Round Robin,single broker,0.6973690850843496
+Round Robin,no balancing,0.6379692518401641
+Round Robin,user balancing,0.6827883671625574
+Round Robin,service balancing,0.6810136158094287
+Round Robin,user&service balancing,0.6102270112355054
+Greedy,single broker,0.8841772215774335
+Greedy,no balancing,0.7791424732016622
+Greedy,user balancing,0.9681998352851938
+Greedy,service balancing,0.8994991268495028
+Greedy,user&service balancing,0.9488713168087297
+AP,single broker,0.038742806623053926
+AP,no balancing,0.8879695500566482
+AP,user balancing,0.9323739725424095
+AP,service balancing,0.909295883463199
+AP,user&service balancing,0.9055290570915993
+TP,single broker,0.3196945091789556
+TP,no balancing,0.8038857394463097
+TP,user balancing,0.9627066847584625
+TP,service balancing,0.8909039589303391
+TP,user&service balancing,0.9290739033329228
