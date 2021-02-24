@@ -74,9 +74,10 @@ for name in ('Successful reqs.', 'Failed reqs.', 'Cost', 'Violated reliability r
         for j, broker in enumerate(['single broker', 'no balancing',\
                 'user balancing', 'service balancing', 'user&service balancing']):
             line.append(res[(alg, broker)] / cnt[(alg, broker)])
-        for i, x in enumerate(line):
-            if x == min(line) or x == max(line) and name == 'succ':
-                j = i
+        best = min(line)
+        if name == 'succ':
+            best = max(line)
+        j = line.index(best)
         line[j] = '{' + '\\bf {:.3f}'.format(line[j]) + '}'
         q = list(map(ff, [alg] + line))
         lines.append(' & '.join(q) + ' \\\\ \hline')
