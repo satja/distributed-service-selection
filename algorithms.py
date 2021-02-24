@@ -23,7 +23,7 @@ def greedy_selection(requests, services, broker, begin_time):
         best_utility_cost = float('inf')
         best_i = -1
         for i, (service, thr) in enumerate(service_throughput):
-            utility_cost = service.utility_cost(user, request_time, begin_time)
+            utility_cost = service.utility_cost(user, request_time, broker, begin_time)
             if utility_cost < best_utility_cost:
                 best_utility_cost = utility_cost
                 best_i = i
@@ -87,7 +87,7 @@ def ap_selection(requests, services, broker, begin_time):
         for j in range(thr):
             row_to_service.append(service)
             utility_cost.append([service.utility_cost(
-                user, req_time, begin_time + broker.alg_duration)
+                user, req_time, broker, begin_time + broker.alg_duration)
                 for user, req_time in requests])
     row_ind, col_ind = linear_sum_assignment(utility_cost)
     for i, row in enumerate(row_ind):
@@ -118,7 +118,7 @@ def tp_selection(requests, services, broker, begin_time):
     demand = [user_demand[u] for u in users]
     supply = [thr for service, thr in services]
     utility_cost = [
-        [s.utility_cost(u, user_to_req_time[u], begin_time + broker.alg_duration)
+        [s.utility_cost(u, user_to_req_time[u], broker, begin_time + broker.alg_duration)
             for u in users]
         for s, thr in services]
     matching = transport(supply, demand, np.array(utility_cost))

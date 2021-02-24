@@ -80,8 +80,9 @@ class Broker:
                 unanswered_reqs += 1
                 reqs_qos.append(None)
                 continue
-            service_time = selection_done_time + distance_time(
-                    self.location, service.location)
+            service_time = selection_done_time +\
+                    distance_time(self.location, user.location) +\
+                    distance_time(user.location, service.location)
             qos = service.serve_request(user, request_time, service_time)
             if qos == None:
                 self.master_broker.service_fail_report(service)

@@ -25,9 +25,12 @@ class Service:
             return self.premium_cost 
         return self.cost
 
-    def utility_cost(self, user, request_time, arrival_time):
+    def utility_cost(self, user, request_time, broker, selection_done_time):
         if self.failed:
             return INFEASIBLE
+        arrival_time = selection_done_time +\
+                distance_time(broker.location, user.location) +\
+                distance_time(user.location, self.location)
         answer_time = arrival_time + self.computation_time +\
                 distance_time(self.location, user.location)
         response_time = answer_time - request_time
