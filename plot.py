@@ -8,6 +8,19 @@ def get_label(name):
         name.replace('&', ' & ')
     return name
 
+def shorten(name):
+    if name.startswith('Failed'):
+        return 'dropped'
+    if 'reliab' in name:
+        return 'rel'
+    if 'RT' in name:
+        return 'rt'
+    if 'Succ' in name:
+        return 'succ'
+    if 'time' in name:
+        return 'time'
+    return name
+
 plt.rcParams.update({'font.size': 18})
 #plt.figure(figsize=(20,10))
 for name in ('Successful reqs.', 'Failed reqs.', 'Cost', 'Violated reliability reqs.',
@@ -43,6 +56,8 @@ for name in ('Successful reqs.', 'Failed reqs.', 'Cost', 'Violated reliability r
     if .1 < max(heights) < 1:
         plt.yticks(np.arange(0,max(heights)+0.05,0.05))
     #plt.bar(positions, heights, align='center', color=colors, label=labels)
+    if 'time' in name:
+        plt.yscale('log')
     plt.xticks(name_positions, names)  #, rotation=45)
     title = name.replace('Cost', "Average cost").replace('Succ', 'QoS-succ').replace('Failed', 'Dropped')
     if 'time' in title:
@@ -54,5 +69,5 @@ for name in ('Successful reqs.', 'Failed reqs.', 'Cost', 'Violated reliability r
     by_label = OrderedDict(zip(labels, handles))
     plt.legend(by_label.values(), by_label.keys())
     #plt.show()
-    plt.savefig(name + '.pdf', format='pdf')
+    plt.savefig(shorten(name) + '.pdf', format='pdf')
     plt.clf()
