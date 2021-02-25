@@ -16,7 +16,6 @@ table = '\
 \\begin{table}[h]\n\
 \\caption{CAPTION}\n\
     \\centering\n\
-    \\label{table:LABEL}\n\
     \\resizebox{\columnwidth}{!}{\n\
         \\begin{tabular}{|c||c|c|c|c|c|}\n\
             \\hline\n\
@@ -26,7 +25,7 @@ table = '\
             CONTENT\
         \\end{tabular}\n\
     }\n\
-    \\label{table:rel}\n\
+    \\label{table:LABEL}\n\
 \\end{table}'
 
 def shorten(name):
