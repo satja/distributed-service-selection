@@ -6,7 +6,7 @@ import numpy as np
 import logging
 from collections import defaultdict
 from time import time
-logging.basicConfig(level=logging.WARNING, stream=sys.stdout)
+logging.basicConfig(level=logging.ERROR, stream=sys.stdout)
 from multiprocessing import Pool
 
 from user import User
@@ -20,7 +20,7 @@ def random_service():
     location = util.random_location()
     reliability = 1 - 0.1 ** max(np.random.normal(2, .5), 1)
     computation_time = max(1, np.random.normal(75, 50))
-    throughput = max(1, int(np.random.normal(10, 5)))
+    throughput = max(1, int(np.random.normal(3, 2)))
     cost = max(0, np.random.uniform(-1, 4))
     premium_cost = max(0, np.random.uniform(-1, 4))
     if cost < premium_cost:
@@ -64,6 +64,8 @@ class Simulation:
         steps = int(self.inactive_users * 1.5)
         qos = []
         unanswered_reqs = 0
+        service_overloads = broker_overloads = 0
+        service_overloads_denominator = broker_overloads_denominator = 0
         unsatisfied_rt = unsatisfied_rel = unsatisfied_both = 0
         total_cost = 0
         user_moves = service_moves = 0
@@ -78,14 +80,16 @@ class Simulation:
                 self.brokers.append(Broker(location, self.master_broker, self.algorithm))
 
             self.master_broker.check_for_failed_brokers()
-            self.brokers = [broker for broker in self.brokers if not broker.failed]
-            self.services = [service for service in self.services if not service.failed]
+            self.brokers = [broker for broker in self.brokers if not broker.is_failed()]
+            self.services = [service for service in self.services if not service.is_failed()]
             if randrange(100) == 0 and len(self.brokers) > 1:
                 self.master_broker.fail()
 
             start = time()
 
             # Service selection
+            total_load = defaultdict(int)
+            #broker_to_loads = dict()
             for broker in self.brokers:
                 selection_time = t * self.ms_per_step
                 results, unanswered, unsatisfied, cost, loads = broker.perform_selection(selection_time)
@@ -95,11 +99,24 @@ class Simulation:
                 unsatisfied_rt += unsatisfied[1]
                 unsatisfied_both += unsatisfied[2]
                 total_cost += cost
-                total_load = defaultdict(int)
-                for service, load in loads.items():
-                    total_load[service] += load
-                for service, load in total_load.items():
-                    assert load <= service.throughput, (service.id, load, service.throughput)
+                if not broker.is_failed():
+                    for service, load in loads.items():
+                        total_load[service] += load
+                #broker_to_loads[broker] = loads.items()
+
+            for service, load in total_load.items():
+                service_overloads += (load == service.throughput)
+                service_overloads_denominator += 1
+
+                '''
+                if load > service.throughput:
+                    logging.error(f'service={service.id} thr={service.throughput} load={load}')
+                    for broker in self.brokers:
+                        for s, l in broker_to_loads[broker]:
+                            if s == service:
+                                logging.error(f'broker={broker.id} load={l} thr={broker.services[s]}')
+                '''
+                assert load <= service.throughput, (service.id, service.throughput, load)
 
             logging.debug(time() - start)
 
@@ -112,6 +129,10 @@ class Simulation:
                 self.brokers.append(Broker(location, self.master_broker, self.algorithm))
             assert all(broker.master_broker == self.master_broker
                     for broker in self.brokers), [b.master_broker for b in self.brokers]
+
+            for broker, space in self.master_broker.broker_free_space.items():
+                broker_overloads += (space == 0)
+                broker_overloads_denominator += 1
 
             start = time()
 
@@ -162,12 +183,15 @@ class Simulation:
         return len(qos), total_cost / len(qos),\
                 successful / len(qos), unanswered_reqs / len(qos),\
                 (unsatisfied_rt + unsatisfied_both) / len(qos),\
-                (unsatisfied_rel + unsatisfied_both) / len(qos)
+                (unsatisfied_rel + unsatisfied_both) / len(qos),\
+                broker_overloads / broker_overloads_denominator,\
+                service_overloads / service_overloads_denominator,
 
 def simulate(params):
     s = Simulation(*params)
     util.selection_times.clear()
     results = s.run()
+    print(results)
     ret = s.algorithm.__name__.replace('_selection', '').replace("_", ' ').title().replace('Ap', 'AP').replace("Tp", "TP")
     if len(s.brokers) == 1:
         ret += ',single broker,'
@@ -181,9 +205,9 @@ def simulate(params):
         ret += ',no balancing,'
     result = dict()
     for (i, name) in [(1, 'Cost'), (2, 'Successful reqs.'), (3, 'Failed reqs.'),
-            (4, 'Violated RT reqs.'), (5, 'Violated reliability reqs.')]:
+            (4, 'Violated RT reqs.'), (5, 'Violated reliability reqs.'),
+            (6, 'Broker overloads'), (7, 'Service overloads')]:
         result[name] = ret + str(results[i]) + '\n'
-    #print(result)
     result['Avg. selection time'] = ret + str(util.avg_selection_time()) + '\n'
     return result
 
@@ -195,17 +219,21 @@ if __name__ == '__main__':
             f.write('')
     params = []
     for random_seed in range(num_tests):
-        num_users, num_services, num_brokers = 1000, 100, 10
+        num_users, num_services, num_brokers = 1000, 400, 100
         for algorithm in range(5):
-            for num_brokers, balance_users, balance_services in [
-                    (1, 0, 0), (num_brokers, 0, 0), (num_brokers, 1, 0),
-                    (num_brokers, 0, 1), (num_brokers, 1, 1)]:
+            for balance_users, balance_services in [(0, 0), (1, 0), (0, 1), (1, 1)]:
                 params.append((num_users, num_services, num_brokers, algorithm,
                     balance_users, balance_services, random_seed))
-    with Pool(min(24, os.cpu_count())) as p:
+            if algorithm < 2:
+                params.append((num_users, num_services, 1, algorithm, 0, 0, random_seed))
+    num_proc = min(24, os.cpu_count())
+    num_proc = 1
+    print(num_proc)
+    with Pool(num_proc) as p:
          results = p.map(simulate, params)
     for name in ('Cost', 'Successful reqs.', 'Failed reqs.',\
-            'Violated RT reqs.', 'Violated reliability reqs.', 'Avg. selection time'):
+            'Violated RT reqs.', 'Violated reliability reqs.', 'Avg. selection time',
+            'Broker overloads', 'Service overloads'):
         with open(name + '.txt', 'a') as f:
             for r in results:
                 f.write(r[name])

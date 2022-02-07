@@ -8,7 +8,7 @@ class Broker:
     def __init__(self, location, master_broker,
             selection_algorithm=algorithms.random_selection):
         self.location = location
-        self.users = []
+        self.users = set()
         self.services = dict()
         self.requests = []
         self.master_broker = master_broker
@@ -24,7 +24,7 @@ class Broker:
         return sum(self.services.values())
 
     def get_users(self):
-        return self.users[:]
+        return list(self.users)
 
     def get_services(self):
         return self.services.items()
@@ -35,13 +35,13 @@ class Broker:
 
     def fail(self):
         self.failed = True
-        logging.info(f'0, broker, {self.id}, fail')
+        logging.warning(f'0, broker, {self.id}, fail')
 
     def is_failed(self):
         return self.failed
 
     def add_user(self, user):
-        self.users.append(user)
+        self.users.add(user)
         logging.debug(f'0, broker, {self.id}, add_user, {user.id}')
 
     def remove_user(self, user):
@@ -73,12 +73,16 @@ class Broker:
         unsatisfied_rt = unsatisfied_rel = unsatisfied_both = 0
         unanswered_reqs = 0
         cost = 0
+        held_reqs = []
         for i, (user, request_time) in enumerate(self.requests):
             service = request_service[i]
             if not service:
-                unsatisfied_users.add(user)
-                unanswered_reqs += 1
-                reqs_qos.append(None)
+                if selection_done_time - request_time < user.max_response_time:
+                    held_reqs.append((user, request_time))
+                else:
+                    unsatisfied_users.add(user)
+                    unanswered_reqs += 1
+                    reqs_qos.append(None)
                 continue
             service_time = selection_done_time +\
                     distance_time(self.location, user.location) +\
@@ -99,7 +103,8 @@ class Broker:
                 elif qos[1] > user.max_response_time:
                     unsatisfied_users.add(user)
                     unsatisfied_rt += 1
-        self.requests = []
+        self.requests = held_reqs
+        unsatisfied_users &= self.users
         logging.debug(f'{begin_time}, broker, {self.id}, perform_selection, {selection_done_time}, {len(unsatisfied_users)}, {len(reqs_qos)}')
 
         # check for failed services
@@ -113,9 +118,9 @@ class Broker:
             # master failed -> leader election among brokers
             new_master = leader_election_simple(self.brokers)
             if new_master == self:
-                logging.debug(f'{selection_done_time}, broker, {self.id}, elected')
+                logging.warning(f'{selection_done_time}, broker, {self.id}, elected')
                 master_broker = MasterBroker(self.location, self.balancing)
-                self.failed = True
+                self.fail()
                 master_broker.fill_brokers_data(self.brokers)
 
         unsatisfied_reqs = unsatisfied_rel, unsatisfied_rt, unsatisfied_both

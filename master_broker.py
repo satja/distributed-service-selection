@@ -74,7 +74,7 @@ class MasterBroker:
                 broker2.update_service(service, new_throughput)
                 self.service_broker_throughput[(service, broker2)] = new_throughput
                 self.broker_to_services[broker2].add(service)
-                logging.info(f'0, master, {self.id}, move_service, {service.id}, {throughput}, {broker.id}, {broker2.id}')
+                logging.warning(f'0, master, {self.id}, move_service, {service.id}, {throughput}, {broker.id}, {broker2.id}')
             self.broker_to_services.pop(broker)
 
     def fail(self):
