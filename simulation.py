@@ -20,7 +20,7 @@ def random_service():
     location = util.random_location()
     reliability = 1 - 0.1 ** max(np.random.normal(2, .5), 1)
     computation_time = max(1, np.random.normal(75, 50))
-    throughput = max(1, int(np.random.normal(3, 2)))
+    throughput = max(1, int(np.random.normal(3.5, 2)))
     cost = max(0, np.random.uniform(-1, 4))
     premium_cost = max(0, np.random.uniform(-1, 4))
     if cost < premium_cost:
@@ -98,6 +98,8 @@ class Simulation:
                 unsatisfied_rel += unsatisfied[0]
                 unsatisfied_rt += unsatisfied[1]
                 unsatisfied_both += unsatisfied[2]
+                broker_overloads += (unsatisfied[0] + unsatisfied[1] + unsatisfied[2] > 0)
+                broker_overloads_denominator += 1
                 total_cost += cost
                 if not broker.is_failed():
                     for service, load in loads.items():
@@ -130,9 +132,11 @@ class Simulation:
             assert all(broker.master_broker == self.master_broker
                     for broker in self.brokers), [b.master_broker for b in self.brokers]
 
+            '''
             for broker, space in self.master_broker.broker_free_space.items():
                 broker_overloads += (space == 0)
                 broker_overloads_denominator += 1
+            '''
 
             start = time()
 
@@ -219,7 +223,7 @@ if __name__ == '__main__':
             f.write('')
     params = []
     for random_seed in range(num_tests):
-        num_users, num_services, num_brokers = 1000, 400, 100
+        num_users, num_services, num_brokers = 1000, 500, 100
         for algorithm in range(5):
             for balance_users, balance_services in [(0, 0), (1, 0), (0, 1), (1, 1)]:
                 params.append((num_users, num_services, num_brokers, algorithm,
