@@ -24,7 +24,8 @@ def shorten(name):
 plt.rcParams.update({'font.size': 18})
 #plt.figure(figsize=(20,10))
 for name in ('Successful reqs.', 'Failed reqs.', 'Cost', 'Violated reliability reqs.',
-        'Violated RT reqs.', 'Avg. selection time', 'Broker overloads', 'Service overloads'):
+        'Violated RT reqs.', 'Avg. selection time', 'Brokers under max load',
+        'Services under max load'):
     plt.figure(figsize=(20,10))
     res = defaultdict(float)
     cnt = defaultdict(int)
@@ -61,7 +62,7 @@ for name in ('Successful reqs.', 'Failed reqs.', 'Cost', 'Violated reliability r
     plt.xticks(name_positions, names)  #, rotation=45)
     title = name.replace('Cost', "Average cost").replace('Succ', 'QoS-succ').replace('Failed', 'Dropped')
     if 'time' in title:
-        title += ' (ms)'
+        title += ' (s)'
     #else:
     #    title += ' (%)'
     plt.title(title)

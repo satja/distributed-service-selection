@@ -131,13 +131,14 @@ class MasterBroker:
         user_moves = 0
         light_brokers = sorted([(space, broker.id, broker) for broker, space in\
                 self.broker_free_space.items()], reverse=True)[:len(self.brokers) // 5]
+        light_brokers = dict([(broker, space) for space, _, broker in light_brokers])
         for user, broker in self.unsatisfied_users:
             if not light_brokers:
                 break
             max_score = -float('inf')
-            max_space = light_brokers[0][0]
+            max_space = max(light_brokers.values())
             old_distance = distance_time(broker.location, user.location)
-            for space, _, b in light_brokers:
+            for b, space in light_brokers.items():
                 if b == broker:
                     continue
                 new_distance = distance_time(b.location, user.location)
@@ -149,6 +150,7 @@ class MasterBroker:
                     broker2 = b
             if max_score == -float('inf'):
                 continue
+            light_brokers[broker2] -= 1
             broker.remove_user(user)
             broker2.add_user(user)
             user.set_broker(broker2)

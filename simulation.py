@@ -98,8 +98,8 @@ class Simulation:
                 unsatisfied_rel += unsatisfied[0]
                 unsatisfied_rt += unsatisfied[1]
                 unsatisfied_both += unsatisfied[2]
-                broker_overloads += (unsatisfied[0] + unsatisfied[1] + unsatisfied[2] > 0)
-                broker_overloads_denominator += 1
+                #broker_overloads += (unsatisfied[0] + unsatisfied[1] + unsatisfied[2] > 0)
+                #broker_overloads_denominator += 1
                 total_cost += cost
                 if not broker.is_failed():
                     for service, load in loads.items():
@@ -132,11 +132,9 @@ class Simulation:
             assert all(broker.master_broker == self.master_broker
                     for broker in self.brokers), [b.master_broker for b in self.brokers]
 
-            '''
             for broker, space in self.master_broker.broker_free_space.items():
                 broker_overloads += (space == 0)
                 broker_overloads_denominator += 1
-            '''
 
             start = time()
 
@@ -237,7 +235,7 @@ if __name__ == '__main__':
          results = p.map(simulate, params)
     for name in ('Cost', 'Successful reqs.', 'Failed reqs.',\
             'Violated RT reqs.', 'Violated reliability reqs.', 'Avg. selection time',
-            'Broker overloads', 'Service overloads'):
+            'Brokers under max load', 'Services under max load'):
         with open(name + '.txt', 'a') as f:
             for r in results:
                 f.write(r[name])
