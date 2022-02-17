@@ -98,8 +98,8 @@ class Simulation:
                 unsatisfied_rel += unsatisfied[0]
                 unsatisfied_rt += unsatisfied[1]
                 unsatisfied_both += unsatisfied[2]
-                #broker_overloads += (unsatisfied[0] + unsatisfied[1] + unsatisfied[2] > 0)
-                #broker_overloads_denominator += 1
+                broker_overloads += (unanswered + unsatisfied[0] + unsatisfied[1] + unsatisfied[2] > 0)
+                broker_overloads_denominator += 1
                 total_cost += cost
                 if not broker.is_failed():
                     for service, load in loads.items():
@@ -132,9 +132,9 @@ class Simulation:
             assert all(broker.master_broker == self.master_broker
                     for broker in self.brokers), [b.master_broker for b in self.brokers]
 
-            for broker, space in self.master_broker.broker_free_space.items():
-                broker_overloads += (space == 0)
-                broker_overloads_denominator += 1
+            #for broker, space in self.master_broker.broker_free_space.items():
+            #    broker_overloads += (space == 0)
+            #    broker_overloads_denominator += 1
 
             start = time()
 
@@ -208,7 +208,7 @@ def simulate(params):
     result = dict()
     for (i, name) in [(1, 'Cost'), (2, 'Successful reqs.'), (3, 'Failed reqs.'),
             (4, 'Violated RT reqs.'), (5, 'Violated reliability reqs.'),
-            (6, 'Broker overloads'), (7, 'Service overloads')]:
+            (6, 'High-load brokers'), (7, 'High-load services')]:
         result[name] = ret + str(results[i]) + '\n'
     result['Avg. selection time'] = ret + str(util.avg_selection_time()) + '\n'
     return result
@@ -216,7 +216,8 @@ def simulate(params):
 if __name__ == '__main__':
     num_tests = int(sys.argv[1])
     for name in ('Cost', 'Successful reqs.', 'Failed reqs.',\
-            'Violated RT reqs.', 'Violated reliability reqs.', 'Avg. selection time'):
+            'Violated RT reqs.', 'Violated reliability reqs.', 'Avg. selection time',
+            'High-load brokers', 'High-load services'):
         with open(name + '.txt', 'w') as f:
             f.write('')
     params = []
@@ -229,13 +230,12 @@ if __name__ == '__main__':
             if algorithm < 2:
                 params.append((num_users, num_services, 1, algorithm, 0, 0, random_seed))
     num_proc = min(24, os.cpu_count())
-    num_proc = 1
-    print(num_proc)
+    print(num_proc, 'processes')
     with Pool(num_proc) as p:
          results = p.map(simulate, params)
     for name in ('Cost', 'Successful reqs.', 'Failed reqs.',\
             'Violated RT reqs.', 'Violated reliability reqs.', 'Avg. selection time',
-            'Brokers under max load', 'Services under max load'):
+            'High-load brokers', 'High-load services'):
         with open(name + '.txt', 'a') as f:
             for r in results:
                 f.write(r[name])
