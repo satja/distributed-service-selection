@@ -208,7 +208,7 @@ def simulate(params):
     result = dict()
     for (i, name) in [(1, 'Cost'), (2, 'Successful reqs.'), (3, 'Failed reqs.'),
             (4, 'Violated RT reqs.'), (5, 'Violated reliability reqs.'),
-            (6, 'High-load brokers'), (7, 'High-load services')]:
+            (6, 'High-load-brokers'), (7, 'High-load-services')]:
         result[name] = ret + str(results[i]) + '\n'
     result['Avg. selection time'] = ret + str(util.avg_selection_time()) + '\n'
     return result
@@ -217,7 +217,7 @@ if __name__ == '__main__':
     num_tests = int(sys.argv[1])
     for name in ('Cost', 'Successful reqs.', 'Failed reqs.',\
             'Violated RT reqs.', 'Violated reliability reqs.', 'Avg. selection time',
-            'High-load brokers', 'High-load services'):
+            'High-load-brokers', 'High-load-services'):
         with open(name + '.txt', 'w') as f:
             f.write('')
     params = []
@@ -235,7 +235,7 @@ if __name__ == '__main__':
          results = p.map(simulate, params)
     for name in ('Cost', 'Successful reqs.', 'Failed reqs.',\
             'Violated RT reqs.', 'Violated reliability reqs.', 'Avg. selection time',
-            'High-load brokers', 'High-load services'):
+            'High-load-brokers', 'High-load-services'):
         with open(name + '.txt', 'a') as f:
             for r in results:
                 f.write(r[name])
