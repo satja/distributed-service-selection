@@ -104,20 +104,10 @@ class Simulation:
                 if not broker.is_failed():
                     for service, load in loads.items():
                         total_load[service] += load
-                #broker_to_loads[broker] = loads.items()
 
             for service, load in total_load.items():
                 service_overloads += (load == service.throughput)
                 service_overloads_denominator += 1
-
-                '''
-                if load > service.throughput:
-                    logging.error(f'service={service.id} thr={service.throughput} load={load}')
-                    for broker in self.brokers:
-                        for s, l in broker_to_loads[broker]:
-                            if s == service:
-                                logging.error(f'broker={broker.id} load={l} thr={broker.services[s]}')
-                '''
                 assert load <= service.throughput, (service.id, service.throughput, load)
 
             logging.debug(time() - start)
@@ -132,16 +122,10 @@ class Simulation:
             assert all(broker.master_broker == self.master_broker
                     for broker in self.brokers), [b.master_broker for b in self.brokers]
 
-            #for broker, space in self.master_broker.broker_free_space.items():
-            #    broker_overloads += (space == 0)
-            #    broker_overloads_denominator += 1
-
             start = time()
 
             # Master load balancing
             self.master_broker.balance_brokers(t)
-            #user_moves += moves[0]
-            #service_moves += moves[1]
             total_thr = sum(s.throughput for s in self.services)
             total_thr_alt = sum(broker.total_throughput() for broker in self.brokers)
             assert total_thr == total_thr_alt, f'{total_thr}, {total_thr_alt}'
@@ -175,7 +159,6 @@ class Simulation:
                 for num_reqs in range(randrange(3)):
                     req_time = t * self.ms_per_step + randrange(self.ms_per_step)
                     user.send_request(req_time)
-            logging.info('')
 
         successful = len(qos) - unanswered_reqs - unsatisfied_rt\
                 - unsatisfied_both - unsatisfied_rel
@@ -227,8 +210,8 @@ if __name__ == '__main__':
             for balance_users, balance_services in [(0, 0), (1, 0), (0, 1), (1, 1)]:
                 params.append((num_users, num_services, num_brokers, algorithm,
                     balance_users, balance_services, random_seed))
-            if algorithm < 2:
-                params.append((num_users, num_services, 1, algorithm, 0, 0, random_seed))
+            #if algorithm >= 2:
+            params.append((num_users, num_services, 1, algorithm, 0, 0, random_seed))
     num_proc = min(24, os.cpu_count())
     print(num_proc, 'processes')
     with Pool(num_proc) as p:
